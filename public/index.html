@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Vivero Lemú — Secretaría de Bosques Chubut</title>
+  <meta name="theme-color" content="#1C3A2E"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Vivero Lemú"/>
+  <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root{
+      --bosque:#1C3A2E;--bosque-d:#0d1f18;
+      --teal:#3AAFA9;--teal-l:#E6F7F7;--teal-d:#1D7A76;
+      --naranja:#E8722A;--verde:#7AAE3E;--rojo:#E53935;
+      --surface:#F7F8FA;--card:#FFFFFF;--border:#E4E7EF;
+      --text:#2D3748;--muted:#6B7A8D;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+    h1,h2,h3,.hind{font-family:'Hind',sans-serif}
+
+    /* ── NAVBAR ── */
+    .brand-wrap{position:sticky;top:0;z-index:51;background:#fff;border-bottom:1px solid #E4E7EF;padding:0 16px;height:52px;display:flex;align-items:center}
+    .brand-wrap img{height:36px;width:auto;display:block}
+    .navbar{
+      position:sticky;top:52px;z-index:100;
+      background:var(--bosque);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:0 16px;
+      height:56px;display:flex;align-items:center;justify-content:flex-end;gap:10px;
+    }
+    .nav-brand{display:flex;align-items:center;gap:10px}
+    .nav-logo{width:30px;height:30px;border-radius:6px;overflow:hidden;flex-shrink:0}
+    .nav-logo img{width:100%;height:100%;object-fit:contain}
+    .nav-logo-fb{width:30px;height:30px;border-radius:6px;background:linear-gradient(135deg,var(--naranja),var(--teal));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
+    .nav-title{font-family:'Hind',sans-serif;font-size:15px;font-weight:600;color:#fff;line-height:1.1}
+    .nav-title span{display:block;font-size:10px;font-weight:400;color:rgba(255,255,255,.45);font-family:'Poppins',sans-serif}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-user{font-size:12px;color:rgba(255,255,255,.6);font-weight:500}
+    .nav-btn{width:32px;height:32px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
+    .nav-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+    .nav-perfil{display:flex;align-items:center;gap:7px;text-decoration:none;padding:4px 10px 4px 4px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);transition:all .15s}
+    .nav-perfil:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25)}
+    .nav-perfil-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--naranja),var(--teal));display:flex;align-items:center;justify-content:center;color:#fff;font-size:10.5px;font-weight:700;flex-shrink:0;overflow:hidden}
+    .nav-perfil-av img{width:100%;height:100%;object-fit:cover}
+    .nav-perfil-txt{font-size:11px;font-weight:600;color:rgba(255,255,255,.85);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .nav-btn.danger{border-color:rgba(239,68,68,.35);color:rgba(239,68,68,.75);background:rgba(239,68,68,.1)}
+    .nav-btn.danger:hover{background:rgba(239,68,68,.22);color:#ef4444;border-color:rgba(239,68,68,.5)}
+
+    /* ── HERO BAR ── */
+    .hero-bar{
+      background:linear-gradient(135deg,var(--bosque) 0%,#1a4a35 60%,#0f3d4a 100%);
+      padding:20px 16px 18px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .hero-saludo{font-family:'Hind',sans-serif;font-size:20px;font-weight:600;color:#fff}
+    .hero-fecha{font-size:12px;color:rgba(255,255,255,.5);margin-top:3px}
+    .hero-chips{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+    .hero-chip{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 11px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);
+      font-size:11px;font-weight:600;color:rgba(255,255,255,.75);
+    }
+    .hero-chip i{font-size:10px;color:var(--teal)}
+    .hero-chip.ok i{color:#6ee7b7}
+    .hero-chip.warn i{color:#fbbf24}
+
+    /* ── TABS ── */
+    .tabs{
+      display:flex;background:var(--card);
+      border-bottom:2px solid var(--border);
+      position:sticky;top:108px;z-index:90;
+      padding:0 16px;
+    }
+    .tab{
+      flex:1;padding:13px 4px 11px;
+      border:none;background:none;
+      font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;
+      color:var(--muted);cursor:pointer;
+      border-bottom:2px solid transparent;margin-bottom:-2px;
+      display:flex;flex-direction:column;align-items:center;gap:4px;
+      transition:color .15s;
+    }
+    .tab i{font-size:15px}
+    .tab.activo{color:var(--teal-d);border-bottom-color:var(--teal)}
+    .tab:hover:not(.activo){color:var(--text)}
+
+    /* ── CONTENIDO ── */
+    .panel{display:none;padding:12px 16px;max-width:100%;margin:0 auto}
+    .panel.activo{display:block}
+
+    /* ── CARDS ── */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+    .card-title{font-family:'Hind',sans-serif;font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+    .card-title i{color:var(--teal)}
+
+    /* ── ASISTENCIA ── */
+    .fichar-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px 0}
+    .btn-fichar{
+      width:140px;height:140px;border-radius:50%;border:none;
+      background:var(--bosque);color:#fff;
+      font-size:13px;font-weight:700;font-family:'Hind',sans-serif;
+      cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+      box-shadow:0 4px 20px rgba(28,58,46,.35);
+      transition:all .2s;
+    }
+    .btn-fichar i{font-size:28px;color:var(--teal)}
+    .btn-fichar:hover{transform:scale(1.04);box-shadow:0 6px 28px rgba(28,58,46,.45)}
+    .btn-fichar.entrada{background:var(--bosque)}
+    .btn-fichar.salida{background:#7f1d1d}
+    .btn-fichar.salida i{color:#fca5a5}
+    .btn-fichar:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .fichar-estado{font-size:12px;color:var(--muted);text-align:center}
+    .fichar-hora{font-family:'Hind',sans-serif;font-size:28px;font-weight:700;color:var(--text);text-align:center;letter-spacing:.02em}
+    .fichar-reloj{font-size:11px;color:var(--muted);text-align:center;margin-top:-8px}
+    .asist-historial{margin-top:4px}
+    .asist-row{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--border);font-size:12px;max-width:480px;margin:0 auto}
+    .asist-row:last-child{border-bottom:none}
+    .asist-tipo{display:inline-flex;align-items:center;gap:4px;font-weight:600}
+    .asist-tipo.e{color:var(--teal-d)}
+    .asist-tipo.s{color:var(--rojo)}
+    .asist-hora{font-family:'Hind',sans-serif;font-size:13px;font-weight:600;color:var(--text)}
+    .asist-geo{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px;margin-top:1px}
+    .geo-ok{color:var(--verde)}
+    .geo-err{color:var(--rojo)}
+    .asist-empty{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+
+    /* ── NOVEDADES ── */
+    .nov-form{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+    .nov-textarea{
+      width:100%;padding:11px 13px;
+      border:1.5px solid var(--border);border-radius:10px;
+      font-size:13px;font-family:'Poppins',sans-serif;color:var(--text);
+      background:var(--surface);resize:none;outline:none;
+      transition:border-color .15s;min-height:90px;
+    }
+    .nov-textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(58,175,169,.1)}
+    .btn-primary{
+      padding:10px 18px;background:var(--bosque);color:#fff;
+      border:none;border-radius:9px;font-size:13px;font-weight:600;
+      font-family:'Poppins',sans-serif;cursor:pointer;
+      display:inline-flex;align-items:center;gap:7px;transition:all .15s;align-self:flex-end;
+    }
+    .btn-primary:hover{background:var(--teal-d)}
+    .btn-primary:disabled{opacity:.5;cursor:not-allowed}
+    .nov-lista{margin-top:4px}
+    .nov-item{padding:13px 0;border-bottom:1px solid var(--border)}
+    .nov-item:last-child{border-bottom:none}
+    .nov-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+    .nov-autor{font-size:11px;font-weight:600;color:var(--teal-d)}
+    .nov-fecha{font-size:10px;color:var(--muted)}
+    .nov-texto{font-size:13px;color:var(--text);line-height:1.55}
+    .nov-empty{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+
+    /* ── INSTRUCCIONES ── */
+    .inst-form{display:flex;flex-direction:column;gap:10px;margin-bottom:4px}
+    .inst-titulo-input{
+      width:100%;padding:10px 13px;
+      border:1.5px solid var(--border);border-radius:10px;
+      font-size:13px;font-family:'Poppins',sans-serif;color:var(--text);
+      background:var(--surface);outline:none;transition:border-color .15s;
+    }
+    .inst-titulo-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(58,175,169,.1)}
+    .inst-item{
+      padding:14px;border-radius:10px;border:1px solid var(--border);
+      background:var(--card);margin-bottom:10px;
+    }
+    .inst-item-titulo{font-family:'Hind',sans-serif;font-size:14px;font-weight:600;color:var(--bosque);margin-bottom:6px;display:flex;align-items:center;gap:7px}
+    .inst-item-titulo i{color:var(--teal);font-size:12px}
+    .inst-item-texto{font-size:13px;color:var(--text);line-height:1.6}
+    .inst-item-meta{font-size:10px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:4px}
+    .inst-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:600;background:var(--teal-l);color:var(--teal-d)}
+    .inst-badge-pendiente{background:#EEF1EE;color:var(--muted)}
+    .inst-badge-concluida{background:#FEF3C7;color:#92400E}
+    .inst-badge-finalizada{background:#DCFCE7;color:#15803D}
+    .inst-badge-vencida{background:#FEE2E2;color:#DC2626}
+    .inst-empty{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+    .inst-admin-only{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;margin-bottom:14px;font-size:11px;color:#92400e;display:flex;align-items:center;gap:7px}
+    .inst-fecha-limite{font-size:10px;font-weight:600;display:flex;align-items:center;gap:4px}
+    .inst-item-acciones{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .inst-btn{border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:opacity .15s}
+    .inst-btn:hover{opacity:.88}
+    .inst-btn-marcar{background:var(--teal);color:#fff}
+    .inst-btn-finalizar{background:#15803D;color:#fff}
+    .inst-btn-reabrir{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .inst-alerta-personal{
+      background:#fef2f2;border:1px solid #fecaca;border-radius:10px;
+      padding:12px 14px;margin-bottom:14px;
+    }
+    .inst-alerta-personal-titulo{font-size:11px;font-weight:700;color:#b91c1c;display:flex;align-items:center;gap:6px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+    .inst-alerta-personal-item{font-size:12px;color:#7f1d1d;padding:4px 0;display:flex;justify-content:space-between;gap:8px}
+    .subact-wrap{margin-top:10px}
+    .subact-progreso-txt{font-size:10px;font-weight:700;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px}
+    .subact-barra{height:7px;border-radius:999px;background:#EEF1EE;overflow:hidden}
+    .subact-barra-fill{height:100%;border-radius:999px;background:var(--teal);transition:width .25s ease}
+    .subact-barra-fill.completo{background:#15803D}
+    .subact-lista{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .subact-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text)}
+    .subact-item input[type=checkbox]{margin-top:2px;width:15px;height:15px;accent-color:var(--teal);cursor:pointer;flex-shrink:0}
+    .subact-item.hecha span{text-decoration:line-through;color:var(--muted)}
+    .subact-item-quitar{border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:11px;padding:0 2px}
+    .subact-form-lista{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+    .subact-form-row{display:flex;gap:6px;align-items:center}
+    .subact-form-row input{flex:1}
+    .subact-form-row button{border:none;background:transparent;color:#DC2626;cursor:pointer;font-size:13px;padding:4px}
+    .subact-btn-agregar{border:1px dashed var(--border);background:transparent;color:var(--muted);border-radius:7px;padding:6px 10px;font-size:11px;cursor:pointer;text-align:left}
+    .subact-btn-agregar:hover{color:var(--teal);border-color:var(--teal)}
+
+    /* ── ARCHIVOS ── */
+    .arch-upload{
+      border:2px dashed var(--border);border-radius:10px;
+      padding:28px 16px;text-align:center;cursor:pointer;
+      transition:border-color .15s,background .15s;margin-bottom:14px;
+    }
+    .arch-upload:hover{border-color:var(--teal);background:var(--teal-l)}
+    .arch-upload i{font-size:28px;color:var(--muted);margin-bottom:8px;display:block}
+    .arch-upload p{font-size:13px;color:var(--muted)}
+    .arch-upload span{font-size:11px;color:var(--muted);opacity:.7}
+    .arch-input{display:none}
+    .arch-lista{}
+    .arch-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+    .arch-item:last-child{border-bottom:none}
+    .arch-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .arch-icon.pdf{background:#fef2f2;color:#dc2626}
+    .arch-icon.img{background:#f0fdf4;color:#16a34a}
+    .arch-icon.doc{background:#eff6ff;color:#2563eb}
+    .arch-icon.gen{background:var(--teal-l);color:var(--teal-d)}
+    .arch-info{flex:1;min-width:0}
+    .arch-nombre{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .arch-meta{font-size:10px;color:var(--muted);margin-top:2px}
+    .arch-dl{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s;flex-shrink:0}
+    .arch-dl:hover{border-color:var(--teal);color:var(--teal)}
+    .arch-empty{text-align:center;padding:24px;color:var(--muted);font-size:12px}
+
+    /* ── TOAST ── */
+    .toast{
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:#1C3A2E;color:#fff;padding:10px 18px;border-radius:10px;
+      font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;
+      white-space:nowrap;z-index:200;display:flex;align-items:center;gap:8px;
+      box-shadow:0 4px 16px rgba(0,0,0,.2);
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{background:#7f1d1d}
+
+    /* ── LOADING ── */
+    .loading{text-align:center;padding:32px;color:var(--muted);font-size:12px}
+    .loading i{font-size:20px;margin-bottom:8px;display:block;opacity:.4}
+
+    /* ── GEO MODAL ── */
+    .geo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+    .geo-overlay.show{opacity:1;pointer-events:all}
+    .geo-sheet{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;text-align:center;transform:translateY(20px);transition:transform .25s}
+    .geo-overlay.show .geo-sheet{transform:translateY(0)}
+    .geo-sheet h3{font-family:'Hind',sans-serif;font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px}
+    .geo-sheet p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px}
+    .geo-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .geo-resultado{font-size:13px;font-weight:600;padding:10px 16px;border-radius:8px;margin-bottom:16px}
+    .geo-resultado.ok{background:var(--teal-l);color:var(--teal-d)}
+    .geo-resultado.err{background:#fef2f2;color:#dc2626}
+    .btn-geo-ok{width:100%;padding:13px;background:var(--bosque);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer}
+    .btn-geo-ok:hover{background:var(--teal-d)}
+    .btn-geo-cancel{width:100%;padding:10px;background:none;border:none;font-size:13px;color:var(--muted);cursor:pointer;margin-top:6px}
+
+    /* ── SEPARADOR SECCIÓN ── */
+    .sec-sep{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .sec-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+    /* ── PRODUCTIVIDAD ── */
+    .prod-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+    .prod-kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;border-top:3px solid var(--teal)}
+    .prod-kpi.naranja{border-top-color:var(--naranja)}
+    .prod-kpi.verde{border-top-color:var(--verde)}
+    .prod-kpi-num{font-family:'Hind',sans-serif;font-size:26px;font-weight:700;color:var(--text)}
+    .prod-kpi-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
+    .tarea-item{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+    .tarea-item:last-child{border-bottom:none}
+    .tarea-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .15s;background:none}
+    .tarea-check.done{background:var(--verde);border-color:var(--verde);color:#fff}
+    .tarea-info{flex:1;min-width:0}
+    .tarea-titulo{font-size:13px;font-weight:500;color:var(--text);line-height:1.4}
+    .tarea-titulo.done{text-decoration:line-through;color:var(--muted)}
+    .tarea-meta{font-size:10px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+    .tarea-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
+    .tarea-badge.alta{background:#fef2f2;color:#dc2626}
+    .tarea-badge.media{background:#fef9c3;color:#854d0e}
+    .tarea-badge.baja{background:var(--teal-l);color:var(--teal-d)}
+    .ranking-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+    .ranking-row:last-child{border-bottom:none}
+    .ranking-pos{font-family:'Hind',sans-serif;font-size:16px;font-weight:700;color:var(--muted);width:22px;text-align:center;flex-shrink:0}
+    .ranking-nombre{flex:1;font-size:13px;font-weight:500;color:var(--text)}
+    .ranking-bar-wrap{width:90px;height:6px;background:var(--border);border-radius:999px;overflow:hidden}
+    .ranking-bar{height:6px;border-radius:999px;background:var(--teal)}
+    .ranking-val{font-size:12px;font-weight:700;font-family:'Hind',sans-serif;color:var(--teal-d);width:28px;text-align:right}
+
+    /* ── PLANTAS ── */
+    .planta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+    .planta-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px;cursor:pointer;transition:all .15s;border-left:4px solid var(--verde)}
+    .planta-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.08);transform:translateY(-1px)}
+    .planta-card.alerta{border-left-color:var(--naranja)}
+    .planta-card.critico{border-left-color:var(--rojo)}
+    .planta-especie{font-size:12px;font-weight:700;color:var(--bosque);margin-bottom:4px;font-family:'Hind',sans-serif}
+    .planta-lote{font-size:10px;color:var(--muted);margin-bottom:8px}
+    .planta-stat{display:flex;align-items:center;justify-content:space-between;font-size:11px;margin-top:4px}
+    .planta-stat-lbl{color:var(--muted)}
+    .planta-stat-val{font-weight:600;color:var(--text)}
+    .planta-stat-val.ok{color:var(--verde)}
+    .planta-stat-val.warn{color:var(--naranja)}
+    .planta-stat-val.err{color:var(--rojo)}
+    .med-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+    .med-field{display:flex;flex-direction:column;gap:4px}
+    .med-field label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .med-input{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s}
+    .med-input:focus{border-color:var(--teal)}
+    .med-full{grid-column:1/-1}
+    .med-historial{margin-top:4px}
+    .med-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr 1fr 1fr;gap:6px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;align-items:center}
+    .med-row:last-child{border-bottom:none}
+    .med-row.header{font-weight:700;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .med-val{text-align:center}
+    .indicador-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .indicador-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+    .indicador-titulo{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .indicador-titulo i{color:var(--teal)}
+
+    /* ── MODAL DE LOTE (detalle + nuevo lote) ── */
+    .lote-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:160;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;padding:14px}
+    .lote-overlay.show{opacity:1;pointer-events:all}
+    .lote-modal{background:var(--card);border-radius:16px;width:100%;max-width:640px;max-height:92vh;overflow-y:auto;padding:20px}
+    .lote-modal-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px}
+    .lote-modal-header h3{font-family:'Hind',sans-serif;font-size:17px;font-weight:700;color:var(--bosque)}
+    .lote-modal-header p{font-size:11px;color:var(--muted);margin-top:2px}
+    .lote-modal-close{border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer;flex-shrink:0}
+    .lote-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-bottom:16px}
+    .lote-stat-card{background:#F7F9F7;border-radius:10px;padding:10px;text-align:center}
+    .lote-stat-num{font-family:'Hind',sans-serif;font-size:18px;font-weight:700;color:var(--bosque)}
+    .lote-stat-lbl{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:2px;letter-spacing:.03em}
+    .lote-tabs{display:flex;gap:4px;overflow-x:auto;margin-bottom:12px;border-bottom:1px solid var(--border)}
+    .lote-tab{border:none;background:none;padding:8px 9px;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:.03em}
+    .lote-tab.active{color:var(--teal-d);border-bottom-color:var(--teal)}
+    .lote-tab-panel{display:none}
+    .lote-tab-panel.active{display:block}
+    .lote-registro{border-bottom:1px solid var(--border);padding:8px 0;font-size:12px}
+    .lote-registro:last-child{border-bottom:none}
+    .lote-registro-top{display:flex;justify-content:space-between;gap:8px;font-weight:600;color:var(--text)}
+    .lote-registro-meta{font-size:10px;color:var(--muted);margin-top:2px}
+    .lote-registro-obs{font-size:11px;color:var(--text);margin-top:3px;line-height:1.5}
+    .lote-empty{text-align:center;color:var(--muted);font-size:11px;padding:14px}
+    .lote-etapas-timeline{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+    .lote-etapa-chip{font-size:10px;font-weight:700;padding:5px 10px;border-radius:999px;background:#EEF1EE;color:var(--muted);display:flex;align-items:center;gap:5px}
+    .lote-etapa-chip.pasada{background:var(--teal-l);color:var(--teal-d)}
+    .lote-etapa-chip.actual{background:var(--bosque);color:#fff}
+    .severidad-alta{color:#DC2626;font-weight:700}
+    .severidad-media{color:#B45309;font-weight:700}
+    .severidad-baja{color:var(--muted)}
+    .gauge-wrap{display:flex;align-items:center;gap:10px}
+    .gauge-num{font-family:'Hind',sans-serif;font-size:28px;font-weight:700;color:var(--text)}
+    .gauge-unit{font-size:11px;color:var(--muted)}
+    .gauge-bar{flex:1;height:8px;background:var(--border);border-radius:999px;overflow:hidden;margin-top:8px}
+    .gauge-fill{height:8px;border-radius:999px;transition:width .6s}
+    .gauge-fill.ok{background:var(--verde)}
+    .gauge-fill.warn{background:var(--naranja)}
+    .gauge-fill.err{background:var(--rojo)}
+    .gauge-rango{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px}
+    /* ── CLIMA ── */
+    .clima-hero{background:linear-gradient(135deg,#0f3d4a 0%,#1a4a35 100%);border-radius:12px;padding:20px;margin-bottom:12px;color:#fff;display:flex;align-items:center;gap:16px}
+    .clima-temp{font-family:'Hind',sans-serif;font-size:52px;font-weight:700;line-height:1;color:#fff}
+    .clima-temp-unit{font-size:20px;color:rgba(255,255,255,.6)}
+    .clima-desc{font-size:13px;color:rgba(255,255,255,.8);margin-top:4px;text-transform:capitalize}
+    .clima-localidad{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;display:flex;align-items:center;gap:4px}
+    .clima-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+    .clima-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+    .clima-stat-val{font-family:'Hind',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+    .clima-stat-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+    .alerta-item{border-radius:10px;padding:13px 14px;margin-bottom:8px;border-left:4px solid}
+    .alerta-item.AL{background:#fef2f2;border-left-color:#dc2626}
+    .alerta-item.AC{background:#fffbeb;border-left-color:#f59e0b}
+    .alerta-item.amarillo{background:#fffbeb;border-left-color:#eab308}.alerta-item.amarillo .alerta-titulo{color:#854d0e}
+    .alerta-item.naranja{background:#fff7ed;border-left-color:#ea580c}.alerta-item.naranja .alerta-titulo{color:#9a3412}
+    .alerta-item.rojo{background:#fef2f2;border-left-color:#dc2626}.alerta-item.rojo .alerta-titulo{color:#991b1b}
+    .alerta-item.advertencia{background:#f5f3ff;border-left-color:#8b5cf6}.alerta-item.advertencia .alerta-titulo{color:#5b21b6}
+    .alerta-titulo{font-size:13px;font-weight:700;margin-bottom:4px}
+    .alerta-item.AL .alerta-titulo{color:#dc2626}
+    .alerta-item.AC .alerta-titulo{color:#92400e}
+    .alerta-zona{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+    .alerta-detalle{font-size:12px;color:var(--text);line-height:1.55}
+    .clima-empty{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+    .clima-empty i{font-size:28px;opacity:.25;display:block;margin-bottom:10px}
+    .clima-fuente{font-size:10px;color:var(--muted);text-align:right;margin-top:8px;display:flex;align-items:center;justify-content:flex-end;gap:4px}
+    .clima-actualizar{background:none;border:1px solid var(--border);border-radius:7px;padding:4px 10px;font-size:10px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px}
+    .clima-actualizar:hover{border-color:var(--teal);color:var(--teal)}
+    /* Aviso meteorológico al ingresar */
+    .clima-popup-overlay{position:fixed;inset:0;background:rgba(11,38,29,.58);z-index:220;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .18s}
+    .clima-popup-overlay.show{opacity:1;pointer-events:auto}
+    .clima-popup{width:min(520px,100%);max-height:88vh;overflow:auto;background:var(--card);border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.28);border-top:7px solid #eab308}
+    .clima-popup.naranja{border-top-color:#ea580c}.clima-popup.rojo{border-top-color:#dc2626}.clima-popup.advertencia{border-top-color:#8b5cf6}
+    .clima-popup-head{padding:18px 20px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .clima-popup-kicker{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#92400e;margin-bottom:4px}
+    .clima-popup h2{font-family:'Hind',sans-serif;font-size:21px;line-height:1.2;color:var(--bosque);margin:0}
+    .clima-popup-close{width:34px;height:34px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--muted);cursor:pointer;flex:0 0 auto}
+    .clima-popup-body{padding:0 20px 18px}.clima-popup-meta{font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 14px;margin-bottom:12px}
+    .clima-popup-detalle{font-size:13px;line-height:1.6;color:var(--text);white-space:pre-line}
+    .clima-popup-actions{display:flex;gap:8px;justify-content:flex-end;padding:14px 20px;background:#f7f9f7;border-radius:0 0 16px 16px}
+    .clima-popup-actions button{font-family:'Poppins',sans-serif;border-radius:8px;padding:9px 13px;font-size:11px;font-weight:700;cursor:pointer}
+    .clima-popup-secondary{background:#fff;border:1px solid var(--border);color:var(--text)}.clima-popup-primary{background:var(--bosque);border:1px solid var(--bosque);color:#fff}
+    /* Aviso de actividad: tarjeta no bloqueante */
+    .actividad-popup{position:fixed;right:18px;top:18px;z-index:210;width:min(410px,calc(100vw - 32px));background:var(--card);border:1px solid var(--border);border-left:6px solid #eab308;border-radius:13px;box-shadow:0 16px 45px rgba(0,0,0,.22);padding:15px;transform:translateX(calc(100% + 40px));opacity:0;pointer-events:none;transition:transform .22s ease,opacity .22s ease}
+    .actividad-popup.show{transform:translateX(0);opacity:1;pointer-events:auto}.actividad-popup.critica{border-left-color:#dc2626}.actividad-popup.alta{border-left-color:#ea580c}.actividad-popup.media{border-left-color:#eab308}
+    .actividad-popup-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.actividad-popup-kicker{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#92400e;margin-bottom:4px}
+    .actividad-popup h2{font-family:'Hind',sans-serif;font-size:17px;line-height:1.25;color:var(--bosque);margin:0}.actividad-popup-close{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px}
+    .actividad-popup-meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--muted);margin-top:8px}.actividad-popup-text{font-size:11px;line-height:1.5;color:var(--text);margin-top:9px}
+    .actividad-popup-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.actividad-popup-actions button{font-family:'Poppins',sans-serif;border-radius:7px;padding:7px 10px;font-size:10px;font-weight:700;cursor:pointer}
+    @media(max-width:600px){.actividad-popup{top:10px;right:10px;width:calc(100vw - 20px)}}
+  </style>
+</head>
+<body>
+<script src="/security.js"></script>
+
+<!-- NAVBAR -->
+<!-- FRANJA INSTITUCIONAL -->
+<div class="brand-wrap">
+  <div style="display:flex;align-items:center;gap:14px;flex:1">
+    <img src="src/LogoBosques.png" alt="Secretaría de Bosques — Gobierno del Chubut"
+      style="height:36px;width:auto;flex-shrink:0" onerror="this.style.display='none'">
+    <div style="width:1px;height:32px;background:var(--border);flex-shrink:0"></div>
+    <div>
+      <div style="font-family:'Hind',sans-serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.2">Vivero Provincial Lemú</div>
+      <div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:1px">Reforestamos el patrimonio natural de los chubutenses</div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="nav-right">
+    <a href="usuarios.html" id="navUsuarios" style="display:none;font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);text-decoration:none;font-weight:600">
+      <i class="fa-solid fa-users-gear"></i> Usuarios
+    </a>
+    <a href="gestion.html" id="navGestion" style="display:none;font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);text-decoration:none;font-weight:600">
+      <i class="fa-solid fa-gauge-high"></i> Gestión
+    </a>
+    <button class="nb-ghost" onclick="cambiarTab('productividad')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
+      <i class="fa-solid fa-chart-bar" style="font-size:11px"></i>Productividad
+    </button>
+    <button class="nb-ghost" onclick="cambiarTab('plantas')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
+      <i class="fa-solid fa-seedling" style="font-size:11px"></i>Plantas
+    </button>
+    <button class="nb-ghost" onclick="cambiarTab('clima')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
+      <i class="fa-solid fa-cloud-sun" style="font-size:11px"></i>Clima
+    </button>
+    <div style="width:1px;height:18px;background:rgba(255,255,255,.15)"></div>
+    <a href="perfil.html" class="nav-perfil" title="Mi perfil">
+      <span class="nav-perfil-av" id="navAvatar">—</span>
+      <span class="nav-perfil-txt" id="navNombre">Mi perfil</span>
+    </a>
+    <button class="nav-btn danger" id="btnLogout" title="Cerrar sesión" style="width:auto;padding:0 12px;gap:6px;font-size:11px;font-weight:600;font-family:'Poppins',sans-serif">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Cerrar sesión</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO BAR -->
+<div class="hero-bar">
+  <div class="hero-saludo" id="heroSaludo">Bienvenido/a</div>
+  <div class="hero-fecha" id="heroFecha"></div>
+  <div class="hero-chips" style="margin-top:12px">
+    <span class="hero-chip ok" id="chipAsist">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="chipAsistTxt">Sin fichar hoy</span>
+    </span>
+    <span class="hero-chip">
+      <i class="fa-solid fa-location-dot"></i>El Maitén
+    </span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab activo" onclick="cambiarTab('asistencia')" id="tabAsistencia">
+    <i class="fa-solid fa-clock"></i>Asistencia
+  </button>
+  <button class="tab" onclick="cambiarTab('novedades')" id="tabNovedades">
+    <i class="fa-solid fa-clipboard-list"></i>Novedades
+  </button>
+  <button class="tab" onclick="cambiarTab('cronograma')" id="tabCronograma">
+    <i class="fa-solid fa-calendar-days"></i>Cronograma <span id="cronBadge" style="display:none;background:#ef4444;color:white;border-radius:10px;padding:1px 5px;font-size:9px"></span>
+  </button>
+  <button class="tab" onclick="cambiarTab('instrucciones')" id="tabInstrucciones">
+    <i class="fa-solid fa-list-check"></i>Actividades
+  </button>
+  <button class="tab" onclick="cambiarTab('archivos')" id="tabArchivos">
+    <i class="fa-solid fa-folder-open"></i>Archivos
+  </button>
+</div>
+
+<!-- PANEL ASISTENCIA -->
+<div class="panel activo" id="panelAsistencia">
+  <div class="card">
+    <div class="fichar-wrap">
+      <div>
+        <div class="fichar-hora" id="relojHora">--:--</div>
+        <div class="fichar-reloj" id="relojFecha"></div>
+      </div>
+      <button class="btn-fichar entrada" id="btnFichar" onclick="abrirGeo()">
+        <i class="fa-solid fa-fingerprint"></i>
+        <span id="btnFicharTxt">Fichar entrada</span>
+      </button>
+      <div class="fichar-estado" id="ficharEstado">Verificá tu ubicación para registrar</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-list-check"></i>Registros de hoy</div>
+    <div id="asistHistorial">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL NOVEDADES -->
+<div class="panel" id="panelNovedades">
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-pen-to-square"></i>Registrar novedad</div>
+    <div class="nov-form">
+      <textarea class="nov-textarea" id="novTexto" placeholder="Describí la novedad del día: tareas realizadas, incidentes, observaciones…" rows="4"></textarea>
+      <button class="btn-primary" onclick="guardarNovedad()">
+        <i class="fa-solid fa-floppy-disk"></i>Guardar
+      </button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i>Novedades recientes</div>
+    <div id="novLista">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL CRONOGRAMA -->
+<div class="panel" id="panelCronograma">
+  <div class="card" id="cronFormCard" style="display:none">
+    <div class="card-title"><i class="fa-solid fa-calendar-plus"></i>Calendarizar actividad</div>
+    <div class="inst-form">
+      <input class="inst-titulo-input" id="cronTitulo" placeholder="Ej.: Repique del lote de ciprés" maxlength="250">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+        <select class="inst-titulo-input" id="cronTipo"><option value="siembra">Siembra</option><option value="repique">Repique</option><option value="riego">Riego</option><option value="fertilizacion">Fertilización</option><option value="sanidad">Sanidad</option><option value="rustificacion">Rustificación</option><option value="plantacion">Plantación</option><option value="despacho">Despacho</option><option value="mantenimiento">Mantenimiento</option><option value="capacitacion">Capacitación</option><option value="otro">Otro</option></select>
+        <label style="font-size:11px;color:var(--muted)">Inicio<input class="inst-titulo-input" id="cronInicio" type="date"></label>
+        <label style="font-size:11px;color:var(--muted)">Fin opcional<input class="inst-titulo-input" id="cronFin" type="date"></label>
+        <label style="font-size:11px;color:var(--muted)">Hora opcional<input class="inst-titulo-input" id="cronHora" type="time"></label>
+        <select class="inst-titulo-input" id="cronLote"><option value="">Sin lote asociado</option></select>
+        <select class="inst-titulo-input" id="cronResponsable"><option value="">Responsable general</option></select>
+        <label style="font-size:11px;color:var(--muted)">Avisar antes (días)<input class="inst-titulo-input" id="cronAlerta" type="number" min="0" max="90" value="0"></label>
+      </div>
+      <textarea class="nov-textarea" id="cronDescripcion" rows="3" placeholder="Objetivo, materiales, sector y observaciones"></textarea>
+      <input class="inst-titulo-input" id="cronMotivo" placeholder="Motivo de la programación (auditoría)">
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-primary" style="background:#6B7A8D" onclick="cerrarCronForm()">Cancelar</button><button class="btn-primary" onclick="guardarCronograma()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between"><span><i class="fa-solid fa-calendar-days"></i>Actividades calendarizadas</span><button class="btn-primary" id="btnNuevoCron" style="display:none;font-size:11px;padding:6px 12px" onclick="abrirCronForm()"><i class="fa-solid fa-plus"></i>Nueva</button></div>
+    <div id="cronAlertas"></div><div id="cronLista"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- PANEL ACTIVIDADES -->
+<div class="panel" id="panelInstrucciones">
+  <div class="card" id="instFormCard" style="display:none">
+    <div class="card-title"><i class="fa-solid fa-plus"></i>Nueva actividad</div>
+    <div class="inst-form">
+      <input class="inst-titulo-input" id="instTitulo" placeholder="Título de la actividad" type="text"/>
+      <textarea class="nov-textarea" id="instTexto" placeholder="Detallá la actividad para el personal…" rows="4"></textarea>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">Fecha límite (opcional)</label>
+        <input class="inst-titulo-input" id="instFechaLimite" type="date" style="max-width:200px"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px">
+          Subactividades (opcional) — ej: repicar implica varios pasos que se tienen que cumplir todos
+        </label>
+        <div class="subact-form-lista" id="instSubactList"></div>
+        <button type="button" class="subact-btn-agregar" style="margin-top:6px" onclick="agregarCampoSubactividad()">
+          <i class="fa-solid fa-plus"></i> Agregar subactividad
+        </button>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn-primary" style="background:#6B7A8D" onclick="document.getElementById('instFormCard').style.display='none'">Cancelar</button>
+        <button class="btn-primary" onclick="guardarInstruccion()">
+          <i class="fa-solid fa-floppy-disk"></i>Publicar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span><i class="fa-solid fa-list-check"></i>Actividades activas</span>
+      <button class="btn-primary" id="btnNuevaInst" style="font-size:11px;padding:6px 12px;display:none" onclick="document.getElementById('instFormCard').style.display='block';this.style.display='none'">
+        <i class="fa-solid fa-plus"></i>Nueva
+      </button>
+    </div>
+    <div id="instAlertaPersonal"></div>
+    <div id="instLista">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL ARCHIVOS -->
+<div class="panel" id="panelArchivos">
+  <div class="card" id="archUploadCard" style="display:none">
+    <div class="card-title"><i class="fa-solid fa-upload"></i>Subir archivo</div>
+    <label class="arch-upload" for="archInput">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      <p>Tocá para seleccionar un archivo</p>
+      <span>PDF, imágenes, documentos — máx. 10 MB</span>
+    </label>
+    <input type="file" id="archInput" class="arch-input" onchange="subirArchivo(this)">
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span><i class="fa-solid fa-folder-open"></i>Documentos compartidos</span>
+      <button class="btn-primary" id="btnSubirArch" style="font-size:11px;padding:6px 12px;display:none" onclick="document.getElementById('archUploadCard').style.display='block';this.style.display='none'">
+        <i class="fa-solid fa-plus"></i>Subir
+      </button>
+    </div>
+    <div id="archLista">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL PRODUCTIVIDAD -->
+<div class="panel" id="panelProductividad">
+
+  <!-- KPIs del día -->
+  <div class="prod-kpis">
+    <div class="prod-kpi">
+      <div class="prod-kpi-num" id="kpiTareasHoy">—</div>
+      <div class="prod-kpi-lbl">Tareas hoy</div>
+    </div>
+    <div class="prod-kpi verde">
+      <div class="prod-kpi-num" id="kpiTareasOk">—</div>
+      <div class="prod-kpi-lbl">Completadas</div>
+    </div>
+    <div class="prod-kpi naranja">
+      <div class="prod-kpi-num" id="kpiTareasPend">—</div>
+      <div class="prod-kpi-lbl">Pendientes</div>
+    </div>
+  </div>
+
+  <!-- Registrar tarea -->
+  <div class="card" id="tareaFormCard" style="display:none">
+    <div class="card-title"><i class="fa-solid fa-plus"></i>Nueva tarea</div>
+    <div class="med-form">
+      <div class="med-field med-full">
+        <label>Descripción de la tarea</label>
+        <input class="med-input" id="tareaTitulo" type="text" placeholder="Ej: Riego sector A, Trasplante pinos…"/>
+      </div>
+      <div class="med-field">
+        <label>Categoría</label>
+        <select class="med-input" id="tareaCat">
+          <option value="riego">Riego</option>
+          <option value="trasplante">Trasplante</option>
+          <option value="fertilizacion">Fertilización</option>
+          <option value="poda">Poda / Raleo</option>
+          <option value="siembra">Siembra</option>
+          <option value="mantenimiento">Mantenimiento</option>
+          <option value="control">Control sanitario</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="med-field">
+        <label>Prioridad</label>
+        <select class="med-input" id="tareaPrioridad">
+          <option value="media">Media</option>
+          <option value="alta">Alta</option>
+          <option value="baja">Baja</option>
+        </select>
+      </div>
+      <div class="med-field med-full">
+        <label>Observaciones</label>
+        <input class="med-input" id="tareaObs" type="text" placeholder="Opcional"/>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-primary" style="background:#6B7A8D;font-size:11px;padding:7px 13px" onclick="cerrarFormTarea()">Cancelar</button>
+      <button class="btn-primary" style="font-size:11px;padding:7px 13px" onclick="guardarTarea()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
+    </div>
+  </div>
+
+  <!-- Lista de tareas -->
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span><i class="fa-solid fa-list-check"></i>Tareas del día</span>
+      <button class="btn-primary" id="btnNuevaTarea" style="font-size:11px;padding:6px 12px;display:none"
+        onclick="document.getElementById('tareaFormCard').style.display='block';this.style.display='none'">
+        <i class="fa-solid fa-plus"></i>Nueva
+      </button>
+    </div>
+    <div id="tareaLista"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div></div>
+  </div>
+
+  <!-- Ranking semanal -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-trophy"></i>Productividad semanal</div>
+    <div id="rankingLista"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div></div>
+  </div>
+</div>
+
+<!-- PANEL PLANTAS -->
+<div class="panel" id="panelPlantas">
+
+  <!-- Tarjetas de lotes -->
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span><i class="fa-solid fa-seedling"></i>Lotes en producción</span>
+      <button class="btn-primary" id="btnNuevoLote" style="font-size:11px;padding:6px 12px;display:none"
+        onclick="abrirModalLote()">
+        <i class="fa-solid fa-plus"></i>Nuevo lote
+      </button>
+    </div>
+    <div class="planta-grid" id="plantaGrid">
+      <div class="loading" style="grid-column:1/-1"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Registrar medición -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-temperature-half"></i>Registrar medición ambiental</div>
+    <div class="med-form">
+      <div class="med-field">
+        <label>Temperatura (°C)</label>
+        <input class="med-input" id="medTemp" type="number" step="0.1" placeholder="18.5"/>
+      </div>
+      <div class="med-field">
+        <label>Humedad relativa (%)</label>
+        <input class="med-input" id="medHum" type="number" step="1" placeholder="65"/>
+      </div>
+      <div class="med-field">
+        <label>Humedad sustrato (%)</label>
+        <input class="med-input" id="medHumSust" type="number" step="1" placeholder="40"/>
+      </div>
+      <div class="med-field">
+        <label>pH</label>
+        <input class="med-input" id="medPh" type="number" step="0.1" placeholder="6.5"/>
+      </div>
+      <div class="med-field">
+        <label>Fertilizante</label>
+        <select class="med-input" id="medFert">
+          <option value="">Sin aplicar</option>
+          <option value="NPK">NPK</option>
+          <option value="urea">Urea</option>
+          <option value="fosfato">Fosfato</option>
+          <option value="organico">Abono orgánico</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="med-field">
+        <label>Sustrato</label>
+        <select class="med-input" id="medSust">
+          <option value="">Sin cambio</option>
+          <option value="turba">Turba</option>
+          <option value="perlita">Perlita</option>
+          <option value="tierra">Tierra negra</option>
+          <option value="mixto">Mixto</option>
+        </select>
+      </div>
+      <div class="med-field">
+        <label>Lote / Especie</label>
+        <select class="med-input" id="medLote">
+          <option value="">— Seleccionar —</option>
+        </select>
+      </div>
+      <div class="med-field">
+        <label>Observaciones</label>
+        <input class="med-input" id="medObs" type="text" placeholder="Opcional"/>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn-primary" onclick="guardarMedicion()"><i class="fa-solid fa-floppy-disk"></i>Guardar medición</button>
+    </div>
+  </div>
+
+  <!-- Indicadores en tiempo real -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-chart-area"></i>Indicadores — última medición</div>
+    <div class="indicador-grid" id="indicadorGrid">
+      <div class="indicador-card">
+        <div class="indicador-titulo"><i class="fa-solid fa-temperature-half"></i>Temperatura</div>
+        <div class="gauge-wrap"><div class="gauge-num" id="gTemp">—</div><div class="gauge-unit">°C</div></div>
+        <div class="gauge-bar"><div class="gauge-fill ok" id="gTempBar" style="width:0%"></div></div>
+        <div class="gauge-rango"><span>0°C</span><span>Óptimo 15–25°C</span><span>40°C</span></div>
+      </div>
+      <div class="indicador-card">
+        <div class="indicador-titulo"><i class="fa-solid fa-droplet"></i>Humedad relativa</div>
+        <div class="gauge-wrap"><div class="gauge-num" id="gHum">—</div><div class="gauge-unit">%</div></div>
+        <div class="gauge-bar"><div class="gauge-fill ok" id="gHumBar" style="width:0%"></div></div>
+        <div class="gauge-rango"><span>0%</span><span>Óptimo 50–80%</span><span>100%</span></div>
+      </div>
+      <div class="indicador-card">
+        <div class="indicador-titulo"><i class="fa-solid fa-flask"></i>pH sustrato</div>
+        <div class="gauge-wrap"><div class="gauge-num" id="gPh">—</div><div class="gauge-unit">pH</div></div>
+        <div class="gauge-bar"><div class="gauge-fill ok" id="gPhBar" style="width:0%"></div></div>
+        <div class="gauge-rango"><span>0</span><span>Óptimo 5.5–7</span><span>14</span></div>
+      </div>
+      <div class="indicador-card">
+        <div class="indicador-titulo"><i class="fa-solid fa-water"></i>Humedad sustrato</div>
+        <div class="gauge-wrap"><div class="gauge-num" id="gHumS">—</div><div class="gauge-unit">%</div></div>
+        <div class="gauge-bar"><div class="gauge-fill ok" id="gHumSBar" style="width:0%"></div></div>
+        <div class="gauge-rango"><span>0%</span><span>Óptimo 30–60%</span><span>100%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historial de mediciones -->
+  <div class="card">
+    <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i>Historial de mediciones</div>
+    <div style="overflow-x:auto">
+      <div class="med-row header">
+        <div>Fecha</div><div class="med-val">Temp.</div><div class="med-val">Hum.</div>
+        <div class="med-val">pH</div><div class="med-val">Fert.</div><div class="med-val">Lote</div>
+      </div>
+      <div id="medHistorial"><div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL CLIMA -->
+<div class="panel" id="panelClima">
+  <div id="climaContenido">
+    <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Consultando el SMN…</div>
+  </div>
+</div>
+
+<!-- GEO MODAL -->
+<div class="geo-overlay" id="geoOverlay">
+  <div class="geo-sheet">
+    <div class="geo-spinner" id="geoSpinner"></div>
+    <h3 id="geoTitulo">Verificando ubicación</h3>
+    <p id="geoMensaje">Estamos confirmando que estás en el vivero. Esto puede tomar unos segundos…</p>
+    <div class="geo-resultado" id="geoResultado" style="display:none"></div>
+    <button class="btn-geo-ok" id="geoBtnOk" style="display:none" onclick="confirmarFichada()">
+      <i class="fa-solid fa-fingerprint" style="margin-right:7px"></i>Confirmar fichada
+    </button>
+    <button class="btn-geo-cancel" onclick="cerrarGeo()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL: NUEVO LOTE -->
+<div class="lote-overlay" id="nuevoLoteOverlay">
+  <div class="lote-modal">
+    <div class="lote-modal-header">
+      <div><h3><i class="fa-solid fa-seedling"></i> Nuevo lote</h3><p>Ficha de producción y trazabilidad de origen</p></div>
+      <button class="lote-modal-close" onclick="cerrarModalLote()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="med-form">
+      <div class="med-field"><label>Especie *</label><input class="med-input" id="nlEspecie" type="text" placeholder="Nothofagus pumilio"/></div>
+      <div class="med-field"><label>Nombre común</label><input class="med-input" id="nlNombreComun" type="text" placeholder="Lenga"/></div>
+      <div class="med-field"><label>Código de lote *</label><input class="med-input" id="nlLote" type="text" placeholder="L-2026-01"/></div>
+      <div class="med-field"><label>Sector</label><input class="med-input" id="nlSector" type="text" placeholder="Invernadero 2"/></div>
+      <div class="med-field"><label>Fecha de siembra</label><input class="med-input" id="nlFechaSiembra" type="date"/></div>
+      <div class="med-field"><label>Sustrato</label><input class="med-input" id="nlSustrato" type="text" placeholder="Turba + perlita"/></div>
+      <div class="med-field"><label>Procedencia de la semilla</label><input class="med-input" id="nlProcedencia" type="text" placeholder="Rodal semillero / proveedor"/></div>
+      <div class="med-field"><label>Lote de semilla</label><input class="med-input" id="nlLoteSemilla" type="text" placeholder="Identificador"/></div>
+      <div class="med-field"><label>Cantidad sembrada *</label><input class="med-input" id="nlCantidad" type="number" placeholder="5000"/></div>
+      <div class="med-field" style="grid-column:1/-1"><label>Notas</label><input class="med-input" id="nlNotas" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn-primary" style="background:#6B7A8D" onclick="cerrarModalLote()">Cancelar</button>
+      <button class="btn-primary" onclick="guardarNuevoLote()"><i class="fa-solid fa-floppy-disk"></i>Crear lote</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DETALLE DE LOTE -->
+<div class="lote-overlay" id="loteDetalleOverlay">
+  <div class="lote-modal">
+    <div class="lote-modal-header">
+      <div><h3 id="ldTitulo"><i class="fa-solid fa-seedling"></i> Lote</h3><p id="ldSubtitulo"></p></div>
+      <button class="lote-modal-close" onclick="cerrarDetalleLote()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="ldContenido">
+      <div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<aside class="actividad-popup" id="actividadPopup" role="status" aria-live="polite" aria-hidden="true">
+  <div class="actividad-popup-head">
+    <div><div class="actividad-popup-kicker" id="actividadPopupNivel"><i class="fa-solid fa-bell"></i> Actividad próxima a vencer</div><h2 id="actividadPopupTitulo">Actividad pendiente</h2></div>
+    <button class="actividad-popup-close" type="button" onclick="cerrarPopupActividad()" aria-label="Cerrar aviso"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="actividad-popup-meta" id="actividadPopupMeta"></div>
+  <div class="actividad-popup-text" id="actividadPopupTexto"></div>
+  <div class="actividad-popup-actions">
+    <button class="clima-popup-secondary" type="button" onclick="cerrarPopupActividad()">Entendido</button>
+    <button class="clima-popup-primary" type="button" onclick="abrirActividadDesdePopup()"><i class="fa-solid fa-list-check"></i> Ver en Actividades</button>
+  </div>
+</aside>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ALERTA METEOROLÓGICA ACTIVA -->
+<div class="clima-popup-overlay" id="climaPopupOverlay" role="dialog" aria-modal="true" aria-labelledby="climaPopupTitulo" aria-hidden="true">
+  <div class="clima-popup" id="climaPopup">
+    <div class="clima-popup-head">
+      <div><div class="clima-popup-kicker"><i class="fa-solid fa-triangle-exclamation"></i> Alerta meteorológica activa</div><h2 id="climaPopupTitulo">Aviso del SMN</h2></div>
+      <button class="clima-popup-close" type="button" onclick="cerrarPopupClima()" aria-label="Cerrar alerta"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="clima-popup-body" id="climaPopupContenido"></div>
+    <div class="clima-popup-actions">
+      <button class="clima-popup-secondary" type="button" onclick="cerrarPopupClima()">Entendido</button>
+      <button class="clima-popup-primary" type="button" onclick="abrirClimaDesdePopup()"><i class="fa-solid fa-cloud-sun"></i> Ver alerta completa</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── ESTADO GLOBAL ──
+let usuario = null;
+let tipoFichada = 'entrada';
+let geoCoords = null;
+let geoValida = false;
+let geoRequestInProgress = false;
+let actividadPendientePopup = null;
+let actividadPopupId = null;
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  await verificarSesion();
+  await comprobarAlertaClimaticaInicio();
+  comprobarActividadesPorVencer();
+  iniciarReloj();
+  cargarAsistencia();
+  cargarNovedades();
+  cargarCronograma();
+  cargarInstrucciones();
+  cargarArchivos();
+  cargarProductividad();
+  cargarPlantas();
+});
+
+async function verificarSesion() {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!r.ok) { location.href = '/login.html'; return; }
+    usuario = await r.json();
+    window.setCsrfToken(usuario.csrf_token);
+    if (usuario.debe_cambiar_clave) { location.href = '/cambiar-clave.html'; return; }
+    document.getElementById('navNombre').textContent = usuario.nombre?.split(' ')[0] || 'Mi perfil';
+    const navAv = document.getElementById('navAvatar');
+    if (usuario.foto_url) {
+      navAv.innerHTML = `<img src="${usuario.foto_url}" alt="Foto de perfil">`;
+    } else {
+      const ini = (usuario.nombre || '').split(' ').slice(0, 2).map(p => p[0] || '').join('').toUpperCase() || '?';
+      navAv.textContent = ini;
+    }
+    document.getElementById('heroSaludo').textContent = saludo() + ', ' + (usuario.nombre?.split(' ')[0] || 'bienvenido/a');
+    // Mostrar controles de admin
+    if (usuario.rol === 'director_general' || usuario.rol === 'administrador_tecnico') {
+      document.getElementById('navUsuarios').style.display = 'inline-flex';
+      document.getElementById('navGestion').style.display = 'inline-flex';
+      document.getElementById('btnNuevaInst').style.display = 'inline-flex';
+      document.getElementById('btnNuevoCron').style.display = 'inline-flex';
+      document.getElementById('btnSubirArch').style.display = 'inline-flex';
+      document.getElementById('btnNuevaTarea').style.display = 'inline-flex';
+      document.getElementById('btnNuevoLote').style.display = 'inline-flex';
+    }
+  } catch { location.href = '/login.html'; }
+}
+
+function saludo() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Buenos días';
+  if (h < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
+
+// ── RELOJ ──
+function iniciarReloj() {
+  const horaEl = document.getElementById('relojHora');
+  const fechaEl = document.getElementById('relojFecha');
+  const heroFechaEl = document.getElementById('heroFecha');
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function tick() {
+    const now = new Date();
+    horaEl.textContent = now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    const fechaStr = `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]} de ${now.getFullYear()}`;
+    fechaEl.textContent = fechaStr;
+    heroFechaEl.textContent = fechaStr;
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+// ── TABS ──
+function cambiarTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('activo'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+  const panel = document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (panel) panel.classList.add('activo');
+  const tabEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (tabEl) tabEl.classList.add('activo');
+  if (tab === 'clima') cargarClima();
+}
+
+// ── TOAST ──
+function showToast(msg, tipo = 'ok') {
+  const t = document.getElementById('toast');
+  t.innerHTML = `<i class="fa-solid fa-${tipo==='ok'?'circle-check':'circle-xmark'}"></i>${msg}`;
+  t.className = 'toast show' + (tipo === 'error' ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── ASISTENCIA ──
+async function cargarAsistencia() {
+  try {
+    const r = await fetch('/api/vivero/asistencia/hoy', { credentials: 'include' });
+    const data = await r.json();
+    renderAsistencia(data);
+  } catch {
+    document.getElementById('asistHistorial').innerHTML = '<div class="asist-empty"><i class="fa-solid fa-triangle-exclamation" style="opacity:.4;margin-right:6px"></i>No se pudo cargar</div>';
+  }
+}
+
+function renderAsistencia(registros) {
+  const el = document.getElementById('asistHistorial');
+  const btn = document.getElementById('btnFichar');
+  const btnTxt = document.getElementById('btnFicharTxt');
+  const estado = document.getElementById('ficharEstado');
+  const chipTxt = document.getElementById('chipAsistTxt');
+  const chip = document.getElementById('chipAsist');
+
+  const hoy = new Date().toDateString();
+  const registrosHoy = registros.filter(r => {
+    return new Date(r.created_at).toDateString() === hoy;
+  });
+
+  if (!registrosHoy.length) {
+    el.innerHTML = '<div class="asist-empty"><i class="fa-solid fa-clock" style="opacity:.3;margin-right:6px"></i>Sin registros hoy</div>';
+    tipoFichada = 'entrada';
+    btnTxt.textContent = 'Fichar entrada';
+    btn.className = 'btn-fichar entrada';
+    chipTxt.textContent = 'Sin fichar hoy';
+    chip.querySelector('i').style.color = '#fbbf24';
+  } else {
+    // El array viene DESC, el primero es el más reciente de hoy
+    const ultimo = registrosHoy[0];
+    if (ultimo.tipo === 'entrada') {
+      tipoFichada = 'salida';
+      btnTxt.textContent = 'Fichar salida';
+      btn.className = 'btn-fichar salida';
+      estado.textContent = 'Entrada registrada — fichá la salida al terminar';
+      chipTxt.textContent = 'En el vivero';
+      chip.querySelector('i').style.color = '#6ee7b7';
+    } else {
+      tipoFichada = 'entrada';
+      btnTxt.textContent = 'Fichar entrada';
+      btn.className = 'btn-fichar entrada';
+      estado.textContent = 'Jornada registrada';
+      chipTxt.textContent = 'Jornada completa';
+      chip.querySelector('i').style.color = '#6ee7b7';
+    }
+  }
+
+  el.innerHTML = (() => {
+    let html = '';
+    let mesActual = '';
+    let fechaActual = '';
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    registros.forEach(r => {
+      const fecha = new Date(r.created_at);
+      const mesAnio = `${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
+      const fechaStr = fecha.toLocaleDateString('es-AR', { weekday:'long', day:'2-digit', month:'long' });
+      const hora = fecha.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+      const hoy = new Date().toDateString();
+      const esHoy = fecha.toDateString() === hoy;
+      const esEntrada = r.tipo === 'entrada';
+
+      // Separador de mes
+      if (mesAnio !== mesActual) {
+        mesActual = mesAnio;
+        fechaActual = '';
+        html += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#fff;background:var(--bosque);padding:6px 12px;border-radius:6px;margin:14px auto 8px;max-width:480px">${mesAnio}</div>`;
+      }
+
+      // Separador de día
+      if (fechaStr !== fechaActual) {
+        fechaActual = fechaStr;
+        html += `<div style="font-size:10px;font-weight:600;color:var(--muted);padding:6px 12px 4px;border-bottom:1px solid var(--border);margin-bottom:2px;max-width:480px;margin-left:auto;margin-right:auto">${esHoy?'Hoy':fechaStr}</div>`;
+      }
+
+      html += `<div class="asist-row">
+        <div>
+          <div class="asist-tipo ${esEntrada?'e':'s'}">
+            <i class="fa-solid fa-${esEntrada?'arrow-right-to-bracket':'arrow-right-from-bracket'}"></i>
+            ${esEntrada?'Entrada':'Salida'} — <span style="font-weight:400;color:var(--muted)">${escH(r.nombre_usuario||usuario.nombre||'')}</span>
+          </div>
+          <div class="asist-geo">
+            <i class="fa-solid fa-location-dot ${r.geo_valida?'geo-ok':'geo-err'}"></i>
+            ${r.geo_valida?'Ubicación verificada':'Sin verificación'}
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="asist-hora">${hora}</div>
+          ${usuario.rol==='director_general'||usuario.rol==='encargado'
+            ? `<button onclick="eliminarAsistencia(${r.id})" title="Eliminar registro"
+                style="width:24px;height:24px;border-radius:6px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:rgba(239,68,68,.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">
+                <i class="fa-solid fa-trash"></i>
+              </button>`
+            : ''}
+        </div>
+      </div>`;
+    });
+    return html;
+  })();
+}
+
+// ── GEO ──
+function abrirGeo() {
+  if (geoRequestInProgress) return;
+  geoRequestInProgress = true;
+  document.getElementById('btnFichar').disabled = true;
+  geoCoords = null; geoValida = false;
+  document.getElementById('geoOverlay').classList.add('show');
+  document.getElementById('geoSpinner').style.display = 'block';
+  document.getElementById('geoTitulo').textContent = 'Verificando ubicación';
+  document.getElementById('geoMensaje').textContent = 'Confirmando que estás en el vivero…';
+  document.getElementById('geoResultado').style.display = 'none';
+  document.getElementById('geoBtnOk').style.display = 'none';
+  // Limpiar mensaje de bloqueo previo si existe
+  const prev = document.querySelector('.geo-bloqueo-msg');
+  if (prev) prev.remove();
+
+  if (!navigator.geolocation) {
+    mostrarGeoResultado(false, 'Tu dispositivo no soporta geolocalización');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      geoCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      geoCoords.precision_m = pos.coords.accuracy;
+      document.getElementById('geoMensaje').textContent = 'Validando ubicación en el servidor…';
+      confirmarFichada();
+    },
+    err => {
+      const mensajes = {
+        1: 'Necesitamos permiso de ubicación para verificar que estás en el vivero.',
+        2: 'El teléfono no pudo determinar la ubicación. Activá la ubicación e intentá nuevamente.',
+        3: 'La ubicación tardó demasiado. Buscá cielo abierto e intentá nuevamente.'
+      };
+      mostrarGeoResultado(false, mensajes[err.code] || 'No se pudo obtener tu ubicación');
+      geoRequestInProgress = false;
+      document.getElementById('btnFichar').disabled = false;
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+function mostrarGeoResultado(ok, msg) {
+  document.getElementById('geoSpinner').style.display = 'none';
+  const res = document.getElementById('geoResultado');
+  const btnOk = document.getElementById('geoBtnOk');
+
+  res.style.display = 'block';
+
+  if (ok) {
+    document.getElementById('geoTitulo').textContent = '¡Ubicación verificada!';
+    document.getElementById('geoMensaje').textContent = 'Registrando asistencia…';
+    res.className = 'geo-resultado ok';
+    res.innerHTML = `<i class="fa-solid fa-circle-check" style="margin-right:6px"></i>${msg}`;
+    btnOk.style.display = 'none';
+    // Registrar automáticamente sin necesidad de click
+    confirmarFichada();
+  } else {
+    document.getElementById('geoTitulo').textContent = 'No es posible registrar';
+    document.getElementById('geoMensaje').textContent = '';
+    res.className = 'geo-resultado err';
+    res.innerHTML = `<i class="fa-solid fa-circle-xmark" style="margin-right:6px"></i>${msg}`;
+    const bloqueo = document.createElement('p');
+    bloqueo.className = 'geo-bloqueo-msg';
+    bloqueo.style.cssText = 'font-size:12px;color:#6b7280;margin-top:10px;line-height:1.6;text-align:center';
+    bloqueo.innerHTML = 'Para registrar tu asistencia debés estar dentro del <strong>Vivero Provincial Lemú</strong>.<br>Acercate al vivero e intentá nuevamente.';
+    res.after(bloqueo);
+    btnOk.style.display = 'none';
+  }
+}
+
+function cerrarGeo() {
+  document.getElementById('geoOverlay').classList.remove('show');
+  geoRequestInProgress = false;
+  document.getElementById('btnFichar').disabled = false;
+}
+
+async function comprobarAlertaClimaticaInicio() {
+  if (!usuario) return;
+  try {
+    const response = await fetch('/api/clima', { credentials: 'include' });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (data.alertas_disponibles === false || !data.alertas?.length) return;
+    const alertas = data.alertas;
+    const firma = `${data.alerta_actualizada || ''}|${alertas.map(a => `${a.titulo}|${a.vigencia}`).join(';')}`;
+    if (sessionStorage.getItem('lemu-alerta-clima-vista') === firma) return;
+    const principal = [...alertas].sort((a, b) => ({rojo:4,naranja:3,amarillo:2,advertencia:1}[b.nivel] || 0) - ({rojo:4,naranja:3,amarillo:2,advertencia:1}[a.nivel] || 0))[0];
+    const popup = document.getElementById('climaPopup');
+    popup.className = `clima-popup ${escH(principal.nivel || 'amarillo')}`;
+    document.getElementById('climaPopupTitulo').textContent = principal.titulo || 'Alerta meteorológica activa';
+    document.getElementById('climaPopupContenido').innerHTML = `
+      <div class="clima-popup-meta">
+        <span><i class="fa-solid fa-map-location-dot"></i> ${escH(principal.zona || data.alerta_area)}</span>
+        ${principal.vigencia ? `<span><i class="fa-regular fa-calendar"></i> ${escH(principal.vigencia)}</span>` : ''}
+      </div>
+      ${principal.detalle ? `<div class="clima-popup-detalle">${escH(principal.detalle)}</div>` : ''}
+      ${alertas.length > 1 ? `<div style="font-size:11px;color:var(--muted);margin-top:10px">Hay ${alertas.length} avisos vigentes para el área.</div>` : ''}`;
+    const overlay = document.getElementById('climaPopupOverlay');
+    overlay.dataset.firma = firma;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.querySelector('.clima-popup-close')?.focus();
+  } catch (error) {
+    console.warn('[clima/inicio] No se pudo verificar la alerta meteorológica');
+  }
+}
+
+function cerrarPopupClima() {
+  const overlay = document.getElementById('climaPopupOverlay');
+  if (overlay.dataset.firma) sessionStorage.setItem('lemu-alerta-clima-vista', overlay.dataset.firma);
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (actividadPendientePopup) {
+    const pendiente = actividadPendientePopup;
+    actividadPendientePopup = null;
+    setTimeout(() => mostrarPopupActividad(pendiente), 220);
+  }
+}
+
+function abrirClimaDesdePopup() {
+  cerrarPopupClima();
+  cambiarTab('clima');
+}
+
+document.getElementById('climaPopupOverlay').addEventListener('click', event => {
+  if (event.target.id === 'climaPopupOverlay') cerrarPopupClima();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && document.getElementById('climaPopupOverlay').classList.contains('show')) cerrarPopupClima();
+  else if (event.key === 'Escape' && document.getElementById('actividadPopup').classList.contains('show')) cerrarPopupActividad();
+});
+
+function nivelActividadPorDias(dias) {
+  if (dias < 0) return { clase:'critica', texto:'Nivel crítico · actividad vencida' };
+  if (dias === 0) return { clase:'critica', texto:'Nivel crítico · vence hoy' };
+  if (dias === 1) return { clase:'alta', texto:'Prioridad alta · vence mañana' };
+  return { clase:'media', texto:`Prioridad media · vence en ${dias} días` };
+}
+
+async function comprobarActividadesPorVencer() {
+  if (!usuario) return;
+  try {
+    const response = await fetch('/api/vivero/instrucciones', { credentials:'include' });
+    if (!response.ok) return;
+    const data = await response.json();
+    const urgentes = data
+      .filter(item => item.estado !== 'finalizada' && item.fecha_limite && diasRestantes(item.fecha_limite) <= UMBRAL_ALERTA_DIAS)
+      .sort((a, b) => diasRestantes(a.fecha_limite) - diasRestantes(b.fecha_limite));
+    if (!urgentes.length) return;
+    const principal = urgentes[0];
+    const dias = diasRestantes(principal.fecha_limite);
+    const firma = urgentes.map(item => `${item.id}:${soloFecha(item.fecha_limite)}:${item.estado}`).join('|');
+    if (sessionStorage.getItem('lemu-actividad-vencimiento-vista') === firma) return;
+    const aviso = { principal, dias, firma, cantidad:urgentes.length };
+    if (document.getElementById('climaPopupOverlay').classList.contains('show')) actividadPendientePopup = aviso;
+    else mostrarPopupActividad(aviso);
+  } catch {
+    console.warn('[actividades/inicio] No se pudieron verificar vencimientos');
+  }
+}
+
+function mostrarPopupActividad(aviso) {
+  const { principal, dias, cantidad } = aviso;
+  const nivel = nivelActividadPorDias(dias);
+  actividadPopupId = principal.id;
+  const popup = document.getElementById('actividadPopup');
+  popup.className = `actividad-popup ${nivel.clase}`;
+  popup.dataset.firma = aviso.firma;
+  document.getElementById('actividadPopupNivel').innerHTML = `<i class="fa-solid fa-bell"></i> ${escH(nivel.texto)}`;
+  document.getElementById('actividadPopupTitulo').textContent = principal.titulo || 'Actividad pendiente';
+  document.getElementById('actividadPopupMeta').innerHTML = `
+    <span><i class="fa-regular fa-calendar"></i> ${escH(textoFechaLimite(principal.fecha_limite, principal.estado))}</span>
+    ${principal.progreso?.total ? `<span><i class="fa-solid fa-list-check"></i> ${principal.progreso.completadas}/${principal.progreso.total} completadas</span>` : ''}`;
+  document.getElementById('actividadPopupTexto').textContent = cantidad > 1
+    ? `Esta actividad requiere atención. Además hay ${cantidad - 1} actividad${cantidad - 1 === 1 ? '' : 'es'} próxima${cantidad - 1 === 1 ? '' : 's'} a vencer.`
+    : 'Esta actividad requiere atención dentro del plazo establecido.';
+  popup.classList.add('show');
+  popup.setAttribute('aria-hidden', 'false');
+}
+
+function cerrarPopupActividad() {
+  const popup = document.getElementById('actividadPopup');
+  if (popup.dataset.firma) sessionStorage.setItem('lemu-actividad-vencimiento-vista', popup.dataset.firma);
+  popup.classList.remove('show');
+  popup.setAttribute('aria-hidden', 'true');
+}
+
+function abrirActividadDesdePopup() {
+  const id = actividadPopupId;
+  cerrarPopupActividad();
+  cambiarTab('instrucciones');
+  setTimeout(() => document.getElementById(`actividad-${id}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 120);
+}
+
+// ── CRONOGRAMA DE PRODUCCIÓN ──
+async function cargarCronograma() {
+  try {
+    const r = await fetch('/api/cronograma', { credentials:'include' });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'Error');
+    const alertas = data.filter(x => x.alerta_activa);
+    const badge = document.getElementById('cronBadge');
+    badge.textContent = alertas.length; badge.style.display = alertas.length ? 'inline-block' : 'none';
+    document.getElementById('cronAlertas').innerHTML = alertas.length ? `<div style="background:#fff4dc;border:1px solid #f1cc82;border-radius:8px;padding:10px;margin-bottom:12px;color:#7c5208;font-size:12px"><b><i class="fa-solid fa-bell"></i> ${alertas.length} actividad${alertas.length===1?'':'es'} requiere${alertas.length===1?'':'n'} atención</b><br>${alertas.map(x=>escH(x.titulo)).join(' · ')}</div>` : '';
+    const el = document.getElementById('cronLista');
+    if (!data.length) { el.innerHTML='<div class="inst-empty"><i class="fa-solid fa-calendar" style="opacity:.3;margin-right:6px"></i>Sin actividades calendarizadas</div>'; return; }
+    el.innerHTML = data.map(x => {
+      const inicio = new Date(x.fecha_inicio+'T12:00:00').toLocaleDateString('es-AR');
+      const fin = x.fecha_fin ? ' al '+new Date(x.fecha_fin+'T12:00:00').toLocaleDateString('es-AR') : '';
+      const admin = usuario && ['director_general','administrador_tecnico'].includes(usuario.rol);
+      return `<div class="inst-card" style="border-left:4px solid ${x.alerta_activa?'#f59e0b':'#37b7af'}"><div class="inst-card-header"><div><span class="inst-badge">${escH(x.tipo)}</span><h3 style="margin:7px 0 3px">${escH(x.titulo)}</h3><div class="inst-meta"><i class="fa-regular fa-calendar"></i> ${inicio}${fin}${x.hora?' · '+escH(x.hora.slice(0,5)):''}${x.lote?' · Lote '+escH(x.lote):''}${x.responsable_nombre?' · '+escH(x.responsable_nombre):''}</div></div><span class="inst-estado">${escH(x.estado.replace('_',' '))}</span></div>${x.descripcion?`<p class="inst-texto">${escH(x.descripcion)}</p>`:''}${admin&&x.estado!=='completada'?`<button class="inst-btn inst-btn-finalizar" onclick="cambiarEstadoCron(${x.id},'completada')"><i class="fa-solid fa-check"></i> Completar</button>`:''}</div>`;
+    }).join('');
+  } catch { document.getElementById('cronLista').innerHTML='<div class="inst-empty">No se pudo cargar el cronograma</div>'; }
+}
+async function abrirCronForm(){
+  document.getElementById('cronFormCard').style.display='block'; document.getElementById('btnNuevoCron').style.display='none';
+  document.getElementById('cronInicio').value=new Date().toISOString().slice(0,10);
+  try { const [l,u]=await Promise.all([fetch('/api/vivero/lotes',{credentials:'include'}).then(r=>r.json()),fetch('/api/usuarios',{credentials:'include'}).then(r=>r.json())]); document.getElementById('cronLote').innerHTML='<option value="">Sin lote asociado</option>'+l.map(x=>`<option value="${x.id}">${escH(x.lote)} · ${escH(x.especie)}</option>`).join(''); document.getElementById('cronResponsable').innerHTML='<option value="">Responsable general</option>'+u.filter(x=>x.activo).map(x=>`<option value="${x.id}">${escH(x.nombre)}</option>`).join(''); } catch {}
+}
+function cerrarCronForm(){document.getElementById('cronFormCard').style.display='none';document.getElementById('btnNuevoCron').style.display='inline-flex'}
+async function guardarCronograma(){
+  const body={titulo:document.getElementById('cronTitulo').value,tipo:document.getElementById('cronTipo').value,fecha_inicio:document.getElementById('cronInicio').value,fecha_fin:document.getElementById('cronFin').value,hora:document.getElementById('cronHora').value,lote_id:document.getElementById('cronLote').value||null,responsable_usuario_id:document.getElementById('cronResponsable').value||null,alertar_dias_antes:Number(document.getElementById('cronAlerta').value||0),descripcion:document.getElementById('cronDescripcion').value,motivo:document.getElementById('cronMotivo').value};
+  try{const r=await fetch('/api/cronograma',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error);showToast('Actividad calendarizada');cerrarCronForm();await cargarCronograma()}catch(e){showToast(e.message||'No se pudo guardar','error')}
+}
+async function cambiarEstadoCron(id,estado){const motivo=prompt('Motivo del cambio (obligatorio):');if(!motivo)return;try{const r=await fetch(`/api/cronograma/${id}/estado`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({estado,motivo})});const d=await r.json();if(!r.ok)throw new Error(d.error);showToast('Cronograma actualizado');await cargarCronograma()}catch(e){showToast(e.message||'Error','error')}}
+
+async function confirmarFichada() {
+  document.getElementById('geoBtnOk').disabled = true;
+  try {
+    const r = await fetch('/api/vivero/asistencia', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: tipoFichada,
+        lat: geoCoords?.lat || null,
+        lng: geoCoords?.lng || null,
+        precision_m: geoCoords?.precision_m || null
+      })
+    });
+    const data = await r.json();
+    if (!r.ok) {
+      const error = new Error(data.error || 'No se pudo registrar la asistencia');
+      error.details = data.details;
+      throw error;
+    }
+    geoValida = true;
+    cerrarGeo();
+    const accion = tipoFichada === 'entrada' ? 'ingreso' : 'salida';
+    showToast(`¡Muchas gracias ${usuario.nombre?.split(' ')[0] || ''}! Ya registramos tu ${accion}.`);
+    await cargarAsistencia();
+  } catch (error) {
+    const detalle = error.details?.distanceMeters
+      ? ` (${error.details.distanceMeters} m)`
+      : '';
+    mostrarGeoResultado(false, `${error.message}${detalle}`);
+    showToast(error.message || 'Error al registrar. Intentá de nuevo.', 'error');
+  } finally {
+    document.getElementById('geoBtnOk').disabled = false;
+    geoRequestInProgress = false;
+    document.getElementById('btnFichar').disabled = false;
+  }
+}
+
+// ── NOVEDADES ──
+async function cargarNovedades() {
+  try {
+    const r = await fetch('/api/vivero/novedades', { credentials: 'include' });
+    const data = await r.json();
+    const el = document.getElementById('novLista');
+    if (!data.length) {
+      el.innerHTML = '<div class="nov-empty"><i class="fa-solid fa-clipboard" style="opacity:.3;margin-right:6px"></i>Sin novedades registradas</div>';
+      return;
+    }
+    el.innerHTML = data.map(n => {
+      const fecha = new Date(n.created_at).toLocaleString('es-AR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+      return `<div class="nov-item">
+        <div class="nov-header">
+          <span class="nov-autor"><i class="fa-solid fa-user" style="margin-right:4px;opacity:.6"></i>${escH(n.nombre_usuario||'Usuario')}</span>
+          <span class="nov-fecha">${fecha}</span>
+        </div>
+        <div class="nov-texto">${escH(n.texto)}</div>
+      </div>`;
+    }).join('');
+  } catch {
+    document.getElementById('novLista').innerHTML = '<div class="nov-empty">No se pudo cargar</div>';
+  }
+}
+
+async function guardarNovedad() {
+  const texto = document.getElementById('novTexto').value.trim();
+  if (!texto) { showToast('Escribí algo antes de guardar', 'error'); return; }
+  try {
+    const r = await fetch('/api/vivero/novedades', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texto })
+    });
+    if (!r.ok) throw new Error();
+    document.getElementById('novTexto').value = '';
+    showToast('Novedad guardada');
+    await cargarNovedades();
+  } catch { showToast('Error al guardar', 'error'); }
+}
+
+// ── INSTRUCCIONES / ACTIVIDADES ──
+const UMBRAL_ALERTA_DIAS = 2; // avisar cuando falten 2 días o menos
+
+function soloFecha(fechaLimite) {
+  // Acepta tanto 'YYYY-MM-DD' como ISO completo ('YYYY-MM-DDTHH:mm:ss.sssZ')
+  // y siempre devuelve solo la parte 'YYYY-MM-DD'.
+  if (!fechaLimite) return null;
+  return String(fechaLimite).slice(0, 10);
+}
+
+function diasRestantes(fechaLimite) {
+  const soloFechaStr = soloFecha(fechaLimite);
+  if (!soloFechaStr) return null;
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const lim = new Date(soloFechaStr + 'T00:00:00');
+  if (isNaN(lim.getTime())) return null;
+  return Math.round((lim - hoy) / 86400000);
+}
+
+function infoEstado(i) {
+  const dias = diasRestantes(i.fecha_limite);
+  const vencida = dias !== null && dias < 0 && i.estado !== 'finalizada';
+  if (i.estado === 'finalizada')       return { clase: 'finalizada', texto: 'Finalizada', icon: 'fa-check-double' };
+  if (vencida)                          return { clase: 'vencida',    texto: 'Vencida',    icon: 'fa-triangle-exclamation' };
+  if (i.estado === 'concluida_operario') return { clase: 'concluida', texto: 'A confirmar', icon: 'fa-hourglass-half' };
+  return { clase: 'pendiente', texto: 'Pendiente', icon: 'fa-circle-dot' };
+}
+
+function textoFechaLimite(fechaLimite, estado) {
+  const soloFechaStr = soloFecha(fechaLimite);
+  if (!soloFechaStr) return '';
+  const dias = diasRestantes(fechaLimite);
+  if (dias === null) return '';
+  const fechaFmt = new Date(soloFechaStr + 'T00:00:00').toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+  if (estado === 'finalizada') return `Vencía el ${fechaFmt}`;
+  if (dias < 0)  return `Venció el ${fechaFmt} (hace ${Math.abs(dias)} día${Math.abs(dias)===1?'':'s'})`;
+  if (dias === 0) return `Vence hoy (${fechaFmt})`;
+  if (dias === 1) return `Vence mañana (${fechaFmt})`;
+  return `Vence el ${fechaFmt} (en ${dias} días)`;
+}
+
+async function cargarInstrucciones() {
+  try {
+    const r = await fetch('/api/vivero/instrucciones', { credentials: 'include' });
+    const data = await r.json();
+    const el = document.getElementById('instLista');
+    const esCoordinador = usuario.rol === 'director_general' || usuario.rol === 'encargado';
+
+    // ── Cartel de advertencia personal (para operarios) ──
+    const alertaEl = document.getElementById('instAlertaPersonal');
+    if (!esCoordinador) {
+      const urgentes = data.filter(i => {
+        if (i.estado === 'finalizada' || !i.fecha_limite) return false;
+        const d = diasRestantes(i.fecha_limite);
+        return d <= UMBRAL_ALERTA_DIAS;
+      });
+      if (urgentes.length) {
+        alertaEl.innerHTML = `<div class="inst-alerta-personal">
+          <div class="inst-alerta-personal-titulo"><i class="fa-solid fa-triangle-exclamation"></i>Actividades por vencer</div>
+          ${urgentes.map(i => `<div class="inst-alerta-personal-item">
+            <span>${escH(i.titulo)}</span><span>${textoFechaLimite(i.fecha_limite, i.estado)}</span>
+          </div>`).join('')}
+        </div>`;
+      } else {
+        alertaEl.innerHTML = '';
+      }
+    } else {
+      alertaEl.innerHTML = '';
+    }
+
+    if (!data.length) {
+      el.innerHTML = '<div class="inst-empty"><i class="fa-solid fa-list-check" style="opacity:.3;margin-right:6px"></i>Sin actividades publicadas</div>';
+      return;
+    }
+
+    el.innerHTML = data.map(i => {
+      const fecha = new Date(i.created_at).toLocaleDateString('es-AR', { day:'2-digit', month:'2-digit', year:'numeric' });
+      const est = infoEstado(i);
+      const fechaLimiteTxt = textoFechaLimite(i.fecha_limite, i.estado);
+
+      // ── Subactividades: barra de progreso + checklist ──
+      const subs = Array.isArray(i.subactividades) ? i.subactividades : [];
+      const tieneSubs = subs.length > 0;
+      const completo = tieneSubs && i.progreso.completadas === i.progreso.total;
+      const puedeTocarChecklist = i.estado !== 'finalizada';
+
+      const subactHtml = tieneSubs ? `
+        <div class="subact-wrap">
+          <div class="subact-progreso-txt">
+            <span>${i.progreso.completadas}/${i.progreso.total} subactividades</span>
+            <span>${i.progreso.porcentaje}%</span>
+          </div>
+          <div class="subact-barra"><div class="subact-barra-fill${completo ? ' completo' : ''}" style="width:${i.progreso.porcentaje}%"></div></div>
+          <ul class="subact-lista">
+            ${subs.map(s => `
+              <li class="subact-item${s.completada ? ' hecha' : ''}">
+                <input type="checkbox" ${s.completada ? 'checked' : ''}
+                  ${puedeTocarChecklist ? `onchange="toggleSubactividad(${i.id}, ${s.id})"` : 'disabled'}/>
+                <span>${escH(s.titulo)}</span>
+              </li>`).join('')}
+          </ul>
+        </div>` : '';
+
+      // ── Acciones ──
+      let acciones = '';
+      if (i.estado !== 'finalizada') {
+        // "Marcar como concluida" solo tiene sentido si NO hay checklist
+        // (si hay subactividades, el propio checklist marca el avance).
+        if (!esCoordinador && i.estado === 'pendiente' && !tieneSubs) {
+          acciones += `<button class="inst-btn inst-btn-marcar" onclick="marcarInstruccion(${i.id})">
+            <i class="fa-solid fa-check"></i>Marcar como concluida
+          </button>`;
+        }
+        if (esCoordinador) {
+          const bloqueado = tieneSubs && !completo;
+          acciones += `<button class="inst-btn inst-btn-finalizar" ${bloqueado ? 'disabled title="Faltan subactividades por completar" style="opacity:.45;cursor:not-allowed"' : ''} onclick="${bloqueado ? '' : `finalizarInstruccion(${i.id})`}">
+            <i class="fa-solid fa-check-double"></i>Finalizar
+          </button>`;
+        }
+      } else if (esCoordinador) {
+        acciones += `<button class="inst-btn inst-btn-reabrir" onclick="reabrirInstruccion(${i.id})">
+          <i class="fa-solid fa-rotate-left"></i>Reabrir
+        </button>`;
+      }
+
+      return `<div class="inst-item" id="actividad-${i.id}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+          <div class="inst-item-titulo"><i class="fa-solid fa-circle-dot"></i>${escH(i.titulo)}</div>
+          <span class="inst-badge inst-badge-${est.clase}"><i class="fa-solid ${est.icon}"></i>${est.texto}</span>
+        </div>
+        <div class="inst-item-texto">${escH(i.texto)}</div>
+        <div class="inst-item-meta"><i class="fa-solid fa-calendar"></i>Publicada el ${fecha} · ${escH(i.nombre_usuario||'')}</div>
+        ${fechaLimiteTxt ? `<div class="inst-fecha-limite" style="color:${est.clase==='vencida'?'#DC2626':'var(--muted)'};margin-top:4px"><i class="fa-solid fa-clock"></i>${fechaLimiteTxt}</div>` : ''}
+        ${i.estado === 'concluida_operario' && i.marcada_por_nombre ? `<div class="inst-fecha-limite" style="color:#92400E;margin-top:4px"><i class="fa-solid fa-user-check"></i>Marcada por ${escH(i.marcada_por_nombre)}, a la espera de confirmación</div>` : ''}
+        ${i.estado === 'finalizada' && i.finalizada_por_nombre ? `<div class="inst-fecha-limite" style="color:#15803D;margin-top:4px"><i class="fa-solid fa-user-check"></i>Finalizada por ${escH(i.finalizada_por_nombre)}</div>` : ''}
+        ${subactHtml}
+        ${acciones ? `<div class="inst-item-acciones">${acciones}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch {
+    document.getElementById('instLista').innerHTML = '<div class="inst-empty">No se pudo cargar</div>';
+  }
+}
+
+// ── Subactividades: lista dinámica dentro del formulario de nueva actividad ──
+function agregarCampoSubactividad(valor) {
+  const cont = document.getElementById('instSubactList');
+  const row = document.createElement('div');
+  row.className = 'subact-form-row';
+  row.innerHTML = `
+    <input class="inst-titulo-input" type="text" placeholder="Ej: Repicar en bandejas" value="${escH(valor||'')}"/>
+    <button type="button" title="Quitar" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+  `;
+  cont.appendChild(row);
+}
+
+function leerSubactividadesDelForm() {
+  return Array.from(document.querySelectorAll('#instSubactList .subact-form-row input'))
+    .map(i => i.value.trim())
+    .filter(Boolean);
+}
+
+function limpiarFormSubactividades() {
+  document.getElementById('instSubactList').innerHTML = '';
+}
+
+async function guardarInstruccion() {
+  const titulo = document.getElementById('instTitulo').value.trim();
+  const texto  = document.getElementById('instTexto').value.trim();
+  const fecha_limite = document.getElementById('instFechaLimite').value || null;
+  const subactividades = leerSubactividadesDelForm();
+  if (!titulo || !texto) { showToast('Completá título y contenido', 'error'); return; }
+  try {
+    const r = await fetch('/api/vivero/instrucciones', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ titulo, texto, fecha_limite, subactividades })
+    });
+    if (!r.ok) throw new Error();
+    document.getElementById('instTitulo').value = '';
+    document.getElementById('instTexto').value = '';
+    document.getElementById('instFechaLimite').value = '';
+    limpiarFormSubactividades();
+    document.getElementById('instFormCard').style.display = 'none';
+    document.getElementById('btnNuevaInst').style.display = 'inline-flex';
+    showToast('Actividad publicada');
+    await cargarInstrucciones();
+  } catch { showToast('Error al publicar', 'error'); }
+}
+
+async function toggleSubactividad(instId, subId) {
+  try {
+    const r = await fetch(`/api/vivero/instrucciones/${instId}/subactividades/${subId}`, {
+      method: 'PATCH', credentials: 'include'
+    });
+    const d = await r.json();
+    if (!r.ok) { showToast(d.error || 'Error', 'error'); await cargarInstrucciones(); return; }
+    await cargarInstrucciones();
+  } catch { showToast('Error de conexión', 'error'); await cargarInstrucciones(); }
+}
+
+async function marcarInstruccion(id) {
+  try {
+    const r = await fetch(`/api/vivero/instrucciones/${id}/marcar`, { method: 'PATCH', credentials: 'include' });
+    const d = await r.json();
+    if (!r.ok) { showToast(d.error || 'Error', 'error'); return; }
+    showToast('Marcada como concluida. Falta la confirmación del coordinador.');
+    await cargarInstrucciones();
+  } catch { showToast('Error de conexión', 'error'); }
+}
+
+async function finalizarInstruccion(id) {
+  try {
+    const r = await fetch(`/api/vivero/instrucciones/${id}/finalizar`, { method: 'PATCH', credentials: 'include' });
+    if (!r.ok) throw new Error();
+    showToast('Actividad finalizada ✓');
+    await cargarInstrucciones();
+  } catch { showToast('Error al finalizar', 'error'); }
+}
+
+async function reabrirInstruccion(id) {
+  try {
+    const r = await fetch(`/api/vivero/instrucciones/${id}/reabrir`, { method: 'PATCH', credentials: 'include' });
+    if (!r.ok) throw new Error();
+    showToast('Actividad reabierta');
+    await cargarInstrucciones();
+  } catch { showToast('Error al reabrir', 'error'); }
+}
+
+// ── ARCHIVOS ──
+async function cargarArchivos() {
+  try {
+    const r = await fetch('/api/vivero/archivos', { credentials: 'include' });
+    const data = await r.json();
+    const el = document.getElementById('archLista');
+    if (!data.length) {
+      el.innerHTML = '<div class="arch-empty"><i class="fa-solid fa-folder-open" style="opacity:.3;margin-right:6px"></i>Sin archivos compartidos</div>';
+      return;
+    }
+    el.innerHTML = data.map(a => {
+      const ext = a.nombre_original?.split('.').pop()?.toLowerCase() || '';
+      const iconClass = ext === 'pdf' ? 'pdf' : ['jpg','jpeg','png','gif','webp'].includes(ext) ? 'img' : ['doc','docx'].includes(ext) ? 'doc' : 'gen';
+      const iconName = iconClass === 'pdf' ? 'file-pdf' : iconClass === 'img' ? 'file-image' : iconClass === 'doc' ? 'file-word' : 'file';
+      const fecha = new Date(a.created_at).toLocaleDateString('es-AR');
+      return `<div class="arch-item">
+        <div class="arch-icon ${iconClass}"><i class="fa-solid fa-${iconName}"></i></div>
+        <div class="arch-info">
+          <div class="arch-nombre">${escH(a.nombre_original)}</div>
+          <div class="arch-meta">${escH(a.nombre_usuario||'')} · ${fecha}</div>
+        </div>
+        <a href="/api/vivero/archivos/${a.id}/descargar" class="arch-dl" download title="Descargar">
+          <i class="fa-solid fa-download"></i>
+        </a>
+      </div>`;
+    }).join('');
+  } catch {
+    document.getElementById('archLista').innerHTML = '<div class="arch-empty">No se pudo cargar</div>';
+  }
+}
+
+async function subirArchivo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { showToast('El archivo supera los 10 MB', 'error'); return; }
+  const fd = new FormData();
+  fd.append('archivo', file);
+  try {
+    const r = await fetch('/api/vivero/archivos', { method: 'POST', credentials: 'include', body: fd });
+    if (!r.ok) throw new Error();
+    input.value = '';
+    document.getElementById('archUploadCard').style.display = 'none';
+    document.getElementById('btnSubirArch').style.display = 'inline-flex';
+    showToast('Archivo subido correctamente');
+    await cargarArchivos();
+  } catch { showToast('Error al subir el archivo', 'error'); }
+}
+
+// ── PRODUCTIVIDAD ──
+async function cargarProductividad() {
+  try {
+    const r = await fetch('/api/vivero/tareas', { credentials: 'include' });
+    const data = await r.json();
+    const total = data.length;
+    const ok = data.filter(t => t.completada).length;
+    const pend = total - ok;
+    document.getElementById('kpiTareasHoy').textContent = total;
+    document.getElementById('kpiTareasOk').textContent = ok;
+    document.getElementById('kpiTareasPend').textContent = pend;
+    const el = document.getElementById('tareaLista');
+    if (!data.length) { el.innerHTML = '<div class="nov-empty" style="text-align:center;padding:20px;color:var(--muted);font-size:12px">Sin tareas registradas hoy</div>'; return; }
+    el.innerHTML = data.map(t => {
+      const prioClass = t.prioridad === 'alta' ? 'alta' : t.prioridad === 'baja' ? 'baja' : 'media';
+      const catIcon = {riego:'droplet',trasplante:'seedling',fertilizacion:'flask',poda:'scissors',siembra:'leaf',mantenimiento:'wrench',control:'microscope',otro:'circle-dot'}[t.categoria]||'circle-dot';
+      return `<div class="tarea-item">
+        <button class="tarea-check ${t.completada?'done':''}" onclick="toggleTarea(${t.id},${!t.completada})">
+          ${t.completada?'<i class="fa-solid fa-check" style="font-size:10px"></i>':''}
+        </button>
+        <div class="tarea-info">
+          <div class="tarea-titulo ${t.completada?'done':''}">${escH(t.titulo)}</div>
+          <div class="tarea-meta">
+            <span><i class="fa-solid fa-${catIcon}" style="margin-right:3px;opacity:.6"></i>${escH(t.categoria)}</span>
+            <span class="tarea-badge ${prioClass}">${t.prioridad}</span>
+            ${t.observaciones?`<span style="color:var(--muted)">${escH(t.observaciones)}</span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch { document.getElementById('tareaLista').innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No se pudo cargar</div>'; }
+
+  // Ranking semanal
+  try {
+    const r = await fetch('/api/vivero/tareas/ranking', { credentials: 'include' });
+    const data = await r.json();
+    const el = document.getElementById('rankingLista');
+    if (!data.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">Sin datos esta semana</div>'; return; }
+    const max = Math.max(...data.map(d => d.completadas));
+    el.innerHTML = data.map((d, i) => `
+      <div class="ranking-row">
+        <div class="ranking-pos">${i+1}</div>
+        <div class="ranking-nombre">${escH(d.nombre)}</div>
+        <div class="ranking-bar-wrap"><div class="ranking-bar" style="width:${max?Math.round(d.completadas/max*100):0}%"></div></div>
+        <div class="ranking-val">${d.completadas}</div>
+      </div>`).join('');
+  } catch { document.getElementById('rankingLista').innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No se pudo cargar</div>'; }
+}
+
+async function guardarTarea() {
+  const titulo = document.getElementById('tareaTitulo').value.trim();
+  if (!titulo) { showToast('Ingresá una descripción', 'error'); return; }
+  const payload = {
+    titulo,
+    categoria:     document.getElementById('tareaCat').value,
+    prioridad:     document.getElementById('tareaPrioridad').value,
+    observaciones: document.getElementById('tareaObs').value.trim()||null,
+  };
+  try {
+    const r = await fetch('/api/vivero/tareas', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if (!r.ok) throw new Error();
+    cerrarFormTarea();
+    showToast('Tarea registrada');
+    await cargarProductividad();
+  } catch { showToast('Error al guardar', 'error'); }
+}
+
+async function toggleTarea(id, completada) {
+  try {
+    await fetch(`/api/vivero/tareas/${id}`, {method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({completada})});
+    await cargarProductividad();
+  } catch { showToast('Error al actualizar', 'error'); }
+}
+
+function cerrarFormTarea() {
+  document.getElementById('tareaFormCard').style.display = 'none';
+  document.getElementById('btnNuevaTarea').style.display = 'inline-flex';
+  document.getElementById('tareaTitulo').value = '';
+  document.getElementById('tareaObs').value = '';
+}
+
+// ── PLANTAS ──
+async function cargarPlantas() {
+  try {
+    const [rLotes, rMed] = await Promise.all([
+      fetch('/api/vivero/lotes', {credentials:'include'}),
+      fetch('/api/vivero/mediciones', {credentials:'include'})
+    ]);
+    const lotes = await rLotes.json();
+    const mediciones = await rMed.json();
+
+    // Poblar selector de lotes en el form
+    const sel = document.getElementById('medLote');
+    sel.innerHTML = '<option value="">— Seleccionar —</option>' + lotes.map(l => `<option value="${l.id}">${escH(l.especie)} — ${escH(l.lote)}</option>`).join('');
+
+    // Tarjetas de lotes
+    const grid = document.getElementById('plantaGrid');
+    if (!lotes.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--muted);font-size:12px"><i class="fa-solid fa-seedling" style="opacity:.3;font-size:22px;display:block;margin-bottom:8px"></i>Sin lotes registrados</div>'; }
+    else {
+      grid.innerHTML = lotes.map(l => {
+        const ultima = mediciones.find(m => m.lote_id === l.id);
+        const humOk = ultima ? (ultima.humedad_relativa >= 50 && ultima.humedad_relativa <= 80) : true;
+        const tempOk = ultima ? (ultima.temperatura >= 10 && ultima.temperatura <= 30) : true;
+        const estado = (!humOk || !tempOk) ? 'alerta' : '';
+        const cantidadActual = l.cantidad_actual != null ? l.cantidad_actual : l.cantidad;
+        return `<div class="planta-card ${estado}" onclick="abrirDetalleLote(${l.id})">
+          <div class="planta-especie">${escH(l.especie)}</div>
+          <div class="planta-lote">Lote: ${escH(l.lote)} · ${cantidadActual ?? '—'} plantas · ${escH(ETAPA_LABEL[l.etapa_actual] || l.etapa_actual || '')}</div>
+          ${ultima ? `
+          <div class="planta-stat"><span class="planta-stat-lbl">Temp.</span><span class="planta-stat-val ${tempOk?'ok':'warn'}">${ultima.temperatura}°C</span></div>
+          <div class="planta-stat"><span class="planta-stat-lbl">Humedad</span><span class="planta-stat-val ${humOk?'ok':'warn'}">${ultima.humedad_relativa}%</span></div>
+          <div class="planta-stat"><span class="planta-stat-lbl">pH</span><span class="planta-stat-val">${ultima.ph||'—'}</span></div>
+          ` : '<div style="font-size:10px;color:var(--muted);margin-top:6px">Sin mediciones</div>'}
+        </div>`;
+      }).join('');
+    }
+
+    // Indicadores con última medición global
+    if (mediciones.length) {
+      const m = mediciones[0];
+      actualizarIndicador('gTemp', 'gTempBar', m.temperatura, 0, 40, 10, 30);
+      actualizarIndicador('gHum', 'gHumBar', m.humedad_relativa, 0, 100, 50, 80);
+      actualizarIndicador('gPh', 'gPhBar', m.ph, 0, 14, 5.5, 7);
+      actualizarIndicador('gHumS', 'gHumSBar', m.humedad_sustrato, 0, 100, 30, 60);
+    }
+
+    // Historial
+    const hist = document.getElementById('medHistorial');
+    if (!mediciones.length) { hist.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">Sin mediciones registradas</div>'; return; }
+    hist.innerHTML = mediciones.slice(0,10).map(m => {
+      const fecha = new Date(m.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      return `<div class="med-row">
+        <div style="font-size:10px;color:var(--muted)">${fecha}</div>
+        <div class="med-val">${m.temperatura!=null?m.temperatura+'°C':'—'}</div>
+        <div class="med-val">${m.humedad_relativa!=null?m.humedad_relativa+'%':'—'}</div>
+        <div class="med-val">${m.ph!=null?m.ph:'—'}</div>
+        <div class="med-val" style="font-size:10px">${escH(m.fertilizante||'—')}</div>
+        <div class="med-val" style="font-size:10px">${escH(m.especie||'—')}</div>
+      </div>`;
+    }).join('');
+  } catch { console.error('Error al cargar plantas'); }
+}
+
+function actualizarIndicador(idNum, idBar, val, min, max, optMin, optMax) {
+  if (val == null) return;
+  document.getElementById(idNum).textContent = val;
+  const pct = Math.min(100, Math.max(0, ((val-min)/(max-min))*100));
+  const bar = document.getElementById(idBar);
+  bar.style.width = pct + '%';
+  bar.className = 'gauge-fill ' + (val >= optMin && val <= optMax ? 'ok' : Math.abs(val-optMin) < 5 || Math.abs(val-optMax) < 5 ? 'warn' : 'err');
+}
+
+async function guardarMedicion() {
+  const payload = {
+    temperatura:      parseFloat(document.getElementById('medTemp').value)||null,
+    humedad_relativa: parseInt(document.getElementById('medHum').value)||null,
+    humedad_sustrato: parseInt(document.getElementById('medHumSust').value)||null,
+    ph:               parseFloat(document.getElementById('medPh').value)||null,
+    fertilizante:     document.getElementById('medFert').value||null,
+    sustrato:         document.getElementById('medSust').value||null,
+    lote_id:          document.getElementById('medLote').value||null,
+    observaciones:    document.getElementById('medObs').value.trim()||null,
+  };
+  if (!payload.temperatura && !payload.humedad_relativa && !payload.ph) {
+    showToast('Ingresá al menos temperatura, humedad o pH', 'error'); return;
+  }
+  try {
+    const r = await fetch('/api/vivero/mediciones', {method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if (!r.ok) throw new Error();
+    ['medTemp','medHum','medHumSust','medPh','medObs'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('medFert').value=''; document.getElementById('medSust').value=''; document.getElementById('medLote').value='';
+    showToast('Medición guardada');
+    await cargarPlantas();
+  } catch { showToast('Error al guardar', 'error'); }
+}
+
+// ── NUEVO LOTE ──
+function abrirModalLote() { document.getElementById('nuevoLoteOverlay').classList.add('show'); }
+function cerrarModalLote() {
+  document.getElementById('nuevoLoteOverlay').classList.remove('show');
+  ['nlEspecie','nlNombreComun','nlLote','nlSector','nlFechaSiembra','nlSustrato',
+   'nlProcedencia','nlLoteSemilla','nlCantidad','nlNotas'].forEach(id => document.getElementById(id).value = '');
+}
+async function guardarNuevoLote() {
+  const payload = {
+    especie:             document.getElementById('nlEspecie').value.trim(),
+    nombre_comun:        document.getElementById('nlNombreComun').value.trim() || null,
+    lote:                document.getElementById('nlLote').value.trim(),
+    sector:              document.getElementById('nlSector').value.trim() || null,
+    fecha_siembra:       document.getElementById('nlFechaSiembra').value || null,
+    sustrato:            document.getElementById('nlSustrato').value.trim() || null,
+    procedencia_semilla: document.getElementById('nlProcedencia').value.trim() || null,
+    lote_semilla:        document.getElementById('nlLoteSemilla').value.trim() || null,
+    cantidad_semilla:    parseInt(document.getElementById('nlCantidad').value) || null,
+    cantidad:            parseInt(document.getElementById('nlCantidad').value) || null,
+    notas:               document.getElementById('nlNotas').value.trim() || null,
+  };
+  if (!payload.especie || !payload.lote) { showToast('Especie y código de lote son requeridos', 'error'); return; }
+  try {
+    const r = await fetch('/api/vivero/lotes', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (!r.ok) { showToast(d.error || 'Error al crear el lote', 'error'); return; }
+    cerrarModalLote();
+    showToast('Lote creado');
+    await cargarPlantas();
+  } catch { showToast('Error de conexión', 'error'); }
+}
+
+// ── DETALLE DE LOTE: estadística de producción ──
+const ETAPA_LABEL = {
+  siembra: 'Siembra', germinacion: 'Germinación', repique: 'Repique',
+  crecimiento: 'Crecimiento', rustificacion: 'Rustificación', despacho: 'Despacho', finalizado: 'Finalizado'
+};
+const ORDEN_ETAPAS = ['siembra','germinacion','repique','crecimiento','rustificacion','despacho'];
+let loteActualId = null;
+let loteTabActiva = 'etapas';
+
+async function abrirDetalleLote(id) {
+  loteActualId = id;
+  loteTabActiva = 'etapas';
+  document.getElementById('loteDetalleOverlay').classList.add('show');
+  await recargarDetalleLote();
+}
+function cerrarDetalleLote() {
+  document.getElementById('loteDetalleOverlay').classList.remove('show');
+  loteActualId = null;
+}
+
+async function recargarDetalleLote() {
+  const cont = document.getElementById('ldContenido');
+  cont.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div>';
+  try {
+    const r = await fetch(`/api/vivero/lotes/${loteActualId}/detalle`, { credentials: 'include' });
+    const data = await r.json();
+    if (!r.ok) { cont.innerHTML = '<div class="lote-empty">No se pudo cargar el lote</div>'; return; }
+    renderDetalleLote(data);
+  } catch { cont.innerHTML = '<div class="lote-empty">Error de conexión</div>'; }
+}
+
+function renderDetalleLote(data) {
+  const { lote, etapas, muestreos, riegos, fertilizaciones, sanidad, despachos, stats } = data;
+  document.getElementById('ldTitulo').innerHTML = `<i class="fa-solid fa-seedling"></i> ${escH(lote.especie)}`;
+  document.getElementById('ldSubtitulo').textContent = `Lote ${lote.lote} · ${lote.sector || 'Sin sector'} · ${lote.nombre_comun || ''}`;
+
+  const fmtPct = v => v == null ? '—' : `${v}%`;
+
+  const idxActual = ORDEN_ETAPAS.indexOf(lote.etapa_actual);
+  const timeline = ORDEN_ETAPAS.map((e, i) => {
+    const clase = i < idxActual ? 'pasada' : (i === idxActual ? 'actual' : '');
+    return `<span class="lote-etapa-chip ${clase}"><i class="fa-solid fa-circle" style="font-size:6px"></i>${ETAPA_LABEL[e]}</span>`;
+  }).join('');
+
+  const cont = document.getElementById('ldContenido');
+  cont.innerHTML = `
+    <div class="lote-etapas-timeline">${timeline}</div>
+    <div class="lote-stats-grid">
+      <div class="lote-stat-card"><div class="lote-stat-num">${stats.cantidad_actual ?? '—'}</div><div class="lote-stat-lbl">Vivas hoy</div></div>
+      <div class="lote-stat-card"><div class="lote-stat-num">${stats.cantidad_inicial ?? '—'}</div><div class="lote-stat-lbl">Sembradas</div></div>
+      <div class="lote-stat-card"><div class="lote-stat-num">${fmtPct(stats.porcentaje_supervivencia)}</div><div class="lote-stat-lbl">Supervivencia</div></div>
+      <div class="lote-stat-card"><div class="lote-stat-num">${fmtPct(stats.porcentaje_germinacion)}</div><div class="lote-stat-lbl">Germinación</div></div>
+      <div class="lote-stat-card"><div class="lote-stat-num">${fmtPct(stats.porcentaje_prendimiento)}</div><div class="lote-stat-lbl">Prendimiento</div></div>
+      <div class="lote-stat-card"><div class="lote-stat-num">${stats.total_despachado ?? 0}</div><div class="lote-stat-lbl">Despachadas</div></div>
+    </div>
+    <div class="lote-tabs" id="ldTabs">
+      ${['etapas','crecimiento','riego','fertilizacion','sanidad','despacho'].map(t =>
+        `<button class="lote-tab ${loteTabActiva===t?'active':''}" onclick="cambiarTabLote('${t}')">${LOTE_TAB_LABEL[t]}</button>`).join('')}
+    </div>
+    <div id="ldTabPanels">
+      ${panelEtapas(etapas)}
+      ${panelMuestreos(muestreos)}
+      ${panelRiegos(riegos)}
+      ${panelFertilizaciones(fertilizaciones)}
+      ${panelSanidad(sanidad)}
+      ${panelDespachos(despachos, stats)}
+    </div>
+  `;
+  mostrarTabLote(loteTabActiva);
+}
+
+const LOTE_TAB_LABEL = { etapas:'Etapas', crecimiento:'Crecimiento', riego:'Riego', fertilizacion:'Fertiliz.', sanidad:'Sanidad', despacho:'Despacho' };
+
+function cambiarTabLote(t) { loteTabActiva = t; mostrarTabLote(t); }
+function mostrarTabLote(t) {
+  document.querySelectorAll('#ldTabs .lote-tab').forEach(b => b.classList.toggle('active', b.textContent === LOTE_TAB_LABEL[t]));
+  document.querySelectorAll('#ldTabPanels .lote-tab-panel').forEach(p => p.classList.toggle('active', p.dataset.tab === t));
+}
+
+function fmtFecha(f) { return f ? new Date(String(f).slice(0,10)+'T00:00:00').toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'; }
+
+// ── Panel: Etapas ──
+function panelEtapas(etapas) {
+  const lista = etapas.length ? etapas.slice().reverse().map(e => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span>${ETAPA_LABEL[e.etapa]}</span><span>${fmtFecha(e.fecha)}</span></div>
+      <div class="lote-registro-meta">${e.cantidad_ok!=null?`${e.cantidad_ok} ok`:''}${e.cantidad_perdida?` · ${e.cantidad_perdida} bajas${e.causa_perdida?` (${escH(e.causa_perdida)})`:''}`:''} · ${escH(e.usuario_nombre||'')}</div>
+      ${e.observaciones ? `<div class="lote-registro-obs">${escH(e.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin etapas registradas</div>';
+
+  return `<div class="lote-tab-panel" data-tab="etapas">
+    <div class="med-form">
+      <div class="med-field"><label>Etapa</label>
+        <select class="med-input" id="etEtapa">${ORDEN_ETAPAS.map(e=>`<option value="${e}">${ETAPA_LABEL[e]}</option>`).join('')}</select>
+      </div>
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="etFecha" type="date"/></div>
+      <div class="med-field"><label>Cantidad OK</label><input class="med-input" id="etCantidadOk" type="number" placeholder="4200"/></div>
+      <div class="med-field"><label>Bajas</label><input class="med-input" id="etPerdida" type="number" placeholder="0"/></div>
+      <div class="med-field"><label>Causa de las bajas</label><input class="med-input" id="etCausa" type="text" placeholder="Hongo / helada / estrés hídrico"/></div>
+      <div class="med-field"><label>Observaciones</label><input class="med-input" id="etObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarEtapa()"><i class="fa-solid fa-floppy-disk"></i>Registrar etapa</button></div>
+    ${lista}
+  </div>`;
+}
+async function guardarEtapa() {
+  const payload = {
+    etapa: document.getElementById('etEtapa').value,
+    fecha: document.getElementById('etFecha').value,
+    cantidad_ok: parseInt(document.getElementById('etCantidadOk').value) || null,
+    cantidad_perdida: parseInt(document.getElementById('etPerdida').value) || 0,
+    causa_perdida: document.getElementById('etCausa').value.trim() || null,
+    observaciones: document.getElementById('etObs').value.trim() || null,
+  };
+  if (!payload.fecha) { showToast('La fecha es requerida', 'error'); return; }
+  await enviarSubregistro('etapas', payload);
+}
+
+// ── Panel: Crecimiento (muestreos) ──
+function panelMuestreos(muestreos) {
+  const lista = muestreos.length ? muestreos.map(m => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span>Altura ${m.altura_prom_cm ?? '—'} cm · Diám. ${m.diametro_prom_mm ?? '—'} mm</span><span>${fmtFecha(m.fecha)}</span></div>
+      <div class="lote-registro-meta">${m.n_muestras} muestras${m.vigor?` · Vigor ${m.vigor}`:''} · ${escH(m.usuario_nombre||'')}</div>
+      ${m.observaciones ? `<div class="lote-registro-obs">${escH(m.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin muestreos registrados</div>';
+
+  return `<div class="lote-tab-panel" data-tab="crecimiento">
+    <div class="med-form">
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="muFecha" type="date"/></div>
+      <div class="med-field"><label>N° de muestras</label><input class="med-input" id="muN" type="number" placeholder="10"/></div>
+      <div class="med-field"><label>Altura promedio (cm)</label><input class="med-input" id="muAlturaProm" type="number" step="0.1" placeholder="12.5"/></div>
+      <div class="med-field"><label>Diámetro promedio (mm)</label><input class="med-input" id="muDiametro" type="number" step="0.1" placeholder="3.2"/></div>
+      <div class="med-field"><label>Altura mín. (cm)</label><input class="med-input" id="muAlturaMin" type="number" step="0.1" placeholder="Opcional"/></div>
+      <div class="med-field"><label>Altura máx. (cm)</label><input class="med-input" id="muAlturaMax" type="number" step="0.1" placeholder="Opcional"/></div>
+      <div class="med-field"><label>Vigor</label>
+        <select class="med-input" id="muVigor"><option value="">Sin evaluar</option><option value="bajo">Bajo</option><option value="medio">Medio</option><option value="alto">Alto</option></select>
+      </div>
+      <div class="med-field"><label>Observaciones</label><input class="med-input" id="muObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarMuestreo()"><i class="fa-solid fa-floppy-disk"></i>Registrar muestreo</button></div>
+    ${lista}
+  </div>`;
+}
+async function guardarMuestreo() {
+  const payload = {
+    fecha: document.getElementById('muFecha').value,
+    n_muestras: parseInt(document.getElementById('muN').value) || 10,
+    altura_prom_cm: parseFloat(document.getElementById('muAlturaProm').value) || null,
+    diametro_prom_mm: parseFloat(document.getElementById('muDiametro').value) || null,
+    altura_min_cm: parseFloat(document.getElementById('muAlturaMin').value) || null,
+    altura_max_cm: parseFloat(document.getElementById('muAlturaMax').value) || null,
+    vigor: document.getElementById('muVigor').value || null,
+    observaciones: document.getElementById('muObs').value.trim() || null,
+  };
+  if (!payload.fecha) { showToast('La fecha es requerida', 'error'); return; }
+  await enviarSubregistro('muestreos', payload);
+}
+
+// ── Panel: Riego ──
+function panelRiegos(riegos) {
+  const lista = riegos.length ? riegos.map(r => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span>${r.volumen_litros ?? '—'} L${r.sistema?` · ${r.sistema}`:''}</span><span>${fmtFecha(r.fecha)}</span></div>
+      <div class="lote-registro-meta">${r.duracion_min?`${r.duracion_min} min · `:''}${escH(r.usuario_nombre||'')}</div>
+      ${r.observaciones ? `<div class="lote-registro-obs">${escH(r.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin riegos registrados</div>';
+
+  return `<div class="lote-tab-panel" data-tab="riego">
+    <div class="med-form">
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="riFecha" type="date"/></div>
+      <div class="med-field"><label>Volumen (litros)</label><input class="med-input" id="riVolumen" type="number" step="0.1" placeholder="150"/></div>
+      <div class="med-field"><label>Sistema</label>
+        <select class="med-input" id="riSistema"><option value="">—</option><option value="goteo">Goteo</option><option value="aspersion">Aspersión</option><option value="microaspersion">Microaspersión</option><option value="manual">Manual</option></select>
+      </div>
+      <div class="med-field"><label>Duración (min)</label><input class="med-input" id="riDuracion" type="number" placeholder="20"/></div>
+      <div class="med-field" style="grid-column:1/-1"><label>Observaciones</label><input class="med-input" id="riObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarRiego()"><i class="fa-solid fa-floppy-disk"></i>Registrar riego</button></div>
+    ${lista}
+  </div>`;
+}
+async function guardarRiego() {
+  const payload = {
+    fecha: document.getElementById('riFecha').value,
+    volumen_litros: parseFloat(document.getElementById('riVolumen').value) || null,
+    sistema: document.getElementById('riSistema').value || null,
+    duracion_min: parseInt(document.getElementById('riDuracion').value) || null,
+    observaciones: document.getElementById('riObs').value.trim() || null,
+  };
+  if (!payload.fecha) { showToast('La fecha es requerida', 'error'); return; }
+  await enviarSubregistro('riegos', payload);
+}
+
+// ── Panel: Fertilización ──
+function panelFertilizaciones(fertilizaciones) {
+  const lista = fertilizaciones.length ? fertilizaciones.map(f => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span>${escH(f.producto)}${f.formula_npk?` (${escH(f.formula_npk)})`:''}</span><span>${fmtFecha(f.fecha)}</span></div>
+      <div class="lote-registro-meta">${f.tipo_aplicacion?`${f.tipo_aplicacion} · `:''}${f.dosis?`${escH(f.dosis)} · `:''}${escH(f.usuario_nombre||'')}</div>
+      ${f.observaciones ? `<div class="lote-registro-obs">${escH(f.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin fertilizaciones registradas</div>';
+
+  return `<div class="lote-tab-panel" data-tab="fertilizacion">
+    <div class="med-form">
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="feFecha" type="date"/></div>
+      <div class="med-field"><label>Producto</label><input class="med-input" id="feProducto" type="text" placeholder="NPK 15-15-15"/></div>
+      <div class="med-field"><label>Tipo de aplicación</label>
+        <select class="med-input" id="feTipo"><option value="">—</option><option value="foliar">Foliar</option><option value="radicular">Radicular</option><option value="sustrato">Sustrato</option></select>
+      </div>
+      <div class="med-field"><label>Dosis</label><input class="med-input" id="feDosis" type="text" placeholder="2 g/l"/></div>
+      <div class="med-field"><label>Fórmula N-P-K</label><input class="med-input" id="feNpk" type="text" placeholder="15-15-15"/></div>
+      <div class="med-field"><label>Observaciones</label><input class="med-input" id="feObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarFertilizacion()"><i class="fa-solid fa-floppy-disk"></i>Registrar fertilización</button></div>
+    ${lista}
+  </div>`;
+}
+async function guardarFertilizacion() {
+  const payload = {
+    fecha: document.getElementById('feFecha').value,
+    producto: document.getElementById('feProducto').value.trim(),
+    tipo_aplicacion: document.getElementById('feTipo').value || null,
+    dosis: document.getElementById('feDosis').value.trim() || null,
+    formula_npk: document.getElementById('feNpk').value.trim() || null,
+    observaciones: document.getElementById('feObs').value.trim() || null,
+  };
+  if (!payload.fecha || !payload.producto) { showToast('Fecha y producto son requeridos', 'error'); return; }
+  await enviarSubregistro('fertilizaciones', payload);
+}
+
+// ── Panel: Sanidad ──
+function panelSanidad(sanidad) {
+  const lista = sanidad.length ? sanidad.map(s => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span class="severidad-${s.severidad}">${s.tipo}${s.agente?`: ${escH(s.agente)}`:''}</span><span>${fmtFecha(s.fecha)}</span></div>
+      <div class="lote-registro-meta">Severidad ${s.severidad}${s.tratamiento?` · Trat.: ${escH(s.tratamiento)}`:''}${s.dosis?` (${escH(s.dosis)})`:''} · ${escH(s.usuario_nombre||'')}</div>
+      ${s.observaciones ? `<div class="lote-registro-obs">${escH(s.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin eventos sanitarios registrados</div>';
+
+  return `<div class="lote-tab-panel" data-tab="sanidad">
+    <div class="med-form">
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="saFecha" type="date"/></div>
+      <div class="med-field"><label>Tipo</label>
+        <select class="med-input" id="saTipo"><option value="plaga">Plaga</option><option value="enfermedad">Enfermedad</option><option value="fisiopatia">Fisiopatía</option></select>
+      </div>
+      <div class="med-field"><label>Agente</label><input class="med-input" id="saAgente" type="text" placeholder="Pulgón / Fusarium / etc."/></div>
+      <div class="med-field"><label>Severidad</label>
+        <select class="med-input" id="saSeveridad"><option value="baja">Baja</option><option value="media">Media</option><option value="alta">Alta</option></select>
+      </div>
+      <div class="med-field"><label>Tratamiento aplicado</label><input class="med-input" id="saTratamiento" type="text" placeholder="Producto"/></div>
+      <div class="med-field"><label>Dosis</label><input class="med-input" id="saDosis" type="text" placeholder="Opcional"/></div>
+      <div class="med-field"><label>Período de carencia (días)</label><input class="med-input" id="saCarencia" type="number" placeholder="Opcional"/></div>
+      <div class="med-field"><label>Observaciones</label><input class="med-input" id="saObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarSanidad()"><i class="fa-solid fa-floppy-disk"></i>Registrar evento</button></div>
+    ${lista}
+  </div>`;
+}
+async function guardarSanidad() {
+  const payload = {
+    fecha: document.getElementById('saFecha').value,
+    tipo: document.getElementById('saTipo').value,
+    agente: document.getElementById('saAgente').value.trim() || null,
+    severidad: document.getElementById('saSeveridad').value,
+    tratamiento: document.getElementById('saTratamiento').value.trim() || null,
+    dosis: document.getElementById('saDosis').value.trim() || null,
+    periodo_carencia_dias: parseInt(document.getElementById('saCarencia').value) || null,
+    observaciones: document.getElementById('saObs').value.trim() || null,
+  };
+  if (!payload.fecha) { showToast('La fecha es requerida', 'error'); return; }
+  await enviarSubregistro('sanidad', payload);
+}
+
+// ── Panel: Despacho ──
+function panelDespachos(despachos, stats) {
+  const esCoordinador = usuario.rol === 'director_general' || usuario.rol === 'encargado';
+  const lista = despachos.length ? despachos.map(d => `
+    <div class="lote-registro">
+      <div class="lote-registro-top"><span>${d.cantidad} plantas → ${escH(d.destino)}</span><span>${fmtFecha(d.fecha)}</span></div>
+      <div class="lote-registro-meta">${d.tipo_destino}${d.responsable?` · Retira: ${escH(d.responsable)}`:''} · ${escH(d.usuario_nombre||'')}</div>
+      ${d.observaciones ? `<div class="lote-registro-obs">${escH(d.observaciones)}</div>` : ''}
+    </div>`).join('') : '<div class="lote-empty">Sin despachos registrados</div>';
+
+  const form = esCoordinador ? `
+    <div class="med-form">
+      <div class="med-field"><label>Fecha</label><input class="med-input" id="deFecha" type="date"/></div>
+      <div class="med-field"><label>Cantidad</label><input class="med-input" id="deCantidad" type="number" placeholder="Disponibles: ${stats.cantidad_actual ?? 0}"/></div>
+      <div class="med-field"><label>Tipo de destino</label>
+        <select class="med-input" id="deTipo"><option value="reforestacion">Reforestación</option><option value="entrega_organismo">Entrega a organismo</option><option value="venta">Venta</option><option value="donacion">Donación</option><option value="otro">Otro</option></select>
+      </div>
+      <div class="med-field"><label>Destino</label><input class="med-input" id="deDestino" type="text" placeholder="Forestación Ruta 40 km 30"/></div>
+      <div class="med-field"><label>Responsable que retira</label><input class="med-input" id="deResponsable" type="text" placeholder="Opcional"/></div>
+      <div class="med-field"><label>Observaciones</label><input class="med-input" id="deObs" type="text" placeholder="Opcional"/></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn-primary" onclick="guardarDespacho()"><i class="fa-solid fa-truck"></i>Registrar despacho</button></div>
+  ` : '<div class="inst-admin-only" style="margin-bottom:12px"><i class="fa-solid fa-circle-info"></i>Solo un coordinador puede registrar despachos.</div>';
+
+  return `<div class="lote-tab-panel" data-tab="despacho">${form}${lista}</div>`;
+}
+async function guardarDespacho() {
+  const payload = {
+    fecha: document.getElementById('deFecha').value,
+    cantidad: parseInt(document.getElementById('deCantidad').value) || null,
+    tipo_destino: document.getElementById('deTipo').value,
+    destino: document.getElementById('deDestino').value.trim(),
+    responsable: document.getElementById('deResponsable').value.trim() || null,
+    observaciones: document.getElementById('deObs').value.trim() || null,
+  };
+  if (!payload.fecha || !payload.cantidad || !payload.destino) { showToast('Fecha, cantidad y destino son requeridos', 'error'); return; }
+  await enviarSubregistro('despachos', payload);
+}
+
+// ── Envío genérico de cualquier subregistro del lote ──
+async function enviarSubregistro(tipo, payload) {
+  try {
+    const r = await fetch(`/api/vivero/lotes/${loteActualId}/${tipo}`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    });
+    const d = await r.json();
+    if (!r.ok) { showToast(d.error || 'Error al guardar', 'error'); return; }
+    showToast('Registro guardado');
+    await recargarDetalleLote();
+    await cargarPlantas();
+  } catch { showToast('Error de conexión', 'error'); }
+}
+
+// ── CLIMA ──
+async function cargarClima() {
+  const el = document.getElementById('climaContenido');
+  el.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Consultando el SMN…</div>';
+  try {
+    const r = await fetch('/api/clima', { credentials: 'include' });
+    const data = await r.json();
+
+    let html = '';
+
+    // Widget clima actual
+    if (data.clima) {
+      const c = data.clima;
+      const iconUrl = c.icon ? `https://ws.smn.gob.ar/img/weather-icons/${c.icon}.png` : null;
+      html += `<div class="clima-hero">
+        ${iconUrl ? `<img src="${iconUrl}" style="width:64px;height:64px;filter:brightness(0) invert(1);opacity:.9" onerror="this.style.display='none'">` : '<i class="fa-solid fa-cloud-sun" style="font-size:48px;color:rgba(255,255,255,.6)"></i>'}
+        <div>
+          <div style="display:flex;align-items:flex-start;gap:4px">
+            <div class="clima-temp">${c.temperatura ?? '—'}</div>
+            <div class="clima-temp-unit">°C</div>
+          </div>
+          <div class="clima-desc">${c.descripcion || 'Sin descripción'}</div>
+          <div class="clima-localidad"><i class="fa-solid fa-location-dot"></i>${c.nombre} · El Maitén, Chubut</div>
+        </div>
+      </div>`;
+
+      html += `<div class="clima-stats">
+        <div class="clima-stat">
+          <div class="clima-stat-val">${c.temp_max != null ? c.temp_max + '°' : '—'}</div>
+          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-up" style="color:var(--rojo);margin-right:3px"></i>Máx</div>
+        </div>
+        <div class="clima-stat">
+          <div class="clima-stat-val">${c.temp_min != null ? c.temp_min + '°' : '—'}</div>
+          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-down" style="color:var(--teal);margin-right:3px"></i>Mín</div>
+        </div>
+        <div class="clima-stat">
+          <div class="clima-stat-val">${c.humedad != null ? c.humedad + '%' : '—'}</div>
+          <div class="clima-stat-lbl"><i class="fa-solid fa-droplet" style="color:var(--azul,#4A7B9D);margin-right:3px"></i>Humedad</div>
+        </div>
+      </div>`;
+
+      if (c.viento_vel) {
+        html += `<div class="card" style="margin-bottom:12px">
+          <div class="card-title"><i class="fa-solid fa-wind"></i>Viento</div>
+          <div style="font-size:14px;color:var(--text)">${c.viento_dir || ''} ${c.viento_vel} km/h</div>
+        </div>`;
+      }
+    } else {
+      html += `<div class="card" style="margin-bottom:12px">
+        <div class="clima-empty">
+          <i class="fa-solid fa-cloud-slash"></i>
+          No se encontraron datos para El Maitén en el SMN.<br>
+          <span style="font-size:11px">La localidad más cercana puede variar.</span>
+        </div>
+      </div>`;
+    }
+
+    // Alertas
+    html += `<div class="card">
+      <div class="card-title" style="justify-content:space-between">
+        <span><i class="fa-solid fa-triangle-exclamation"></i>Alertas y avisos</span>
+        <button class="clima-actualizar" onclick="cargarClima()"><i class="fa-solid fa-rotate-right"></i>Actualizar</button>
+      </div>`;
+
+    if (data.alertas_disponibles === false) {
+      html += `<div class="alerta-item AC">
+        <div class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px"></i>Estado de alertas no disponible</div>
+        <div class="alerta-detalle">No fue posible verificar el Sistema de Alerta Temprana. Consultá la fuente oficial antes de organizar tareas al aire libre.</div>
+      </div>`;
+    } else if (data.alertas?.length) {
+      html += data.alertas.map(a => `
+        <div class="alerta-item ${a.tipo} ${escH(a.nivel || '')}">
+          <div class="alerta-titulo"><i class="fa-solid fa-${a.tipo==='AL'?'circle-exclamation':'triangle-exclamation'}" style="margin-right:6px"></i>${escH(a.titulo)}</div>
+          ${a.zona ? `<div class="alerta-zona"><i class="fa-solid fa-map-location-dot"></i>${escH(a.zona)}</div>` : ''}
+          ${a.vigencia ? `<div class="alerta-zona"><i class="fa-regular fa-calendar"></i>${escH(a.vigencia)}</div>` : ''}
+          ${a.detalle ? `<div class="alerta-detalle">${escH(a.detalle)}</div>` : ''}
+          ${a.recomendaciones ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-size:11px;font-weight:700">Recomendaciones oficiales</summary><div class="alerta-detalle" style="white-space:pre-line;margin-top:6px">${escH(a.recomendaciones)}</div></details>` : ''}
+        </div>`).join('');
+    } else {
+      html += `<div class="clima-empty" style="padding:16px">
+        <i class="fa-solid fa-circle-check" style="color:var(--verde);opacity:1;font-size:22px"></i>
+        Sin alertas activas para la zona
+      </div>`;
+    }
+
+    html += `<div class="clima-fuente"><i class="fa-solid fa-satellite-dish"></i>Fuente: <a href="${data.alerta_fuente_url || 'https://ws2.smn.gob.ar/alertas'}" target="_blank" rel="noopener">${data.fuente || 'SMN'}</a>${data.alerta_actualizada ? ` · actualización ${escH(new Date(data.alerta_actualizada).toLocaleString('es-AR'))}` : ''}</div>`;
+    html += `</div>`;
+
+    el.innerHTML = html;
+  } catch (err) {
+    el.innerHTML = `<div class="card"><div class="clima-empty"><i class="fa-solid fa-triangle-exclamation"></i>No se pudo conectar con el SMN.<br>Revisá tu conexión e intentá de nuevo.<br><br><button class="clima-actualizar" onclick="cargarClima()" style="margin:0 auto"><i class="fa-solid fa-rotate-right"></i>Reintentar</button></div></div>`;
+  }
+}
+
+async function eliminarAsistencia(id) {
+  const motivo = prompt('Motivo de la rectificación (el registro original se conservará):');
+  if (!motivo) return;
+  try {
+    const r = await fetch(`/api/vivero/asistencia/${id}/rectificar`, {
+      method:'PATCH', credentials:'include', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({motivo})
+    });
+    if (!r.ok) throw new Error();
+    showToast('Registro rectificado; el original quedó en auditoría');
+    await cargarAsistencia();
+  } catch { showToast('No se pudo rectificar', 'error'); }
+}
+
+// ── LOGOUT ──
+document.getElementById('btnLogout').addEventListener('click', async () => {
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+  sessionStorage.removeItem('lemu-alerta-clima-vista');
+  sessionStorage.removeItem('lemu-actividad-vencimiento-vista');
+  location.href = '/login.html';
+});
+
+// ── UTILS ──
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

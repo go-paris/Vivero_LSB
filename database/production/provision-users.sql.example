@@ -1,0 +1,8 @@
+-- Ejecutar una sola vez con la cuenta administradora del MySQL exclusivo de Lemú.
+-- Reemplazar ambos marcadores localmente; nunca versionar contraseñas reales.
+CREATE DATABASE IF NOT EXISTS `vivero_lemu_production` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'vivero_deployer'@'%' IDENTIFIED BY 'REEMPLAZAR_CLAVE_DEPLOYER';
+CREATE USER 'vivero_app'@'%' IDENTIFIED BY 'REEMPLAZAR_CLAVE_APP';
+GRANT CREATE, DROP, ALTER, INDEX, REFERENCES, CREATE VIEW, SHOW VIEW ON `vivero_lemu_production`.* TO 'vivero_deployer'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `vivero_lemu_production`.* TO 'vivero_app'@'%';
+-- Después de aplicar y verificar el esquema: DROP USER 'vivero_deployer'@'%';

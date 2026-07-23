@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.initial-admin-credentials.txt
+.team-initial-credentials.txt
+local-provision.sql
+local-lockdown.sql
+node_modules/
+uploads/*
+!uploads/.gitkeep
+*.rar
+npm-debug.log*
+.npm-cache/

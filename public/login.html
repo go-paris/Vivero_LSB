@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Ingresar — Vivero Lemú · Secretaría de Bosques Chubut</title>
+  <meta name="theme-color" content="#0d2b20"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Vivero Lemú"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Poppins',sans-serif;
+      min-height:100vh;
+      display:flex;
+      -webkit-font-smoothing:antialiased;
+      background:#0d1f1a;
+    }
+    /* Panel izquierdo — identidad institucional */
+    .panel-left{
+      flex:0 0 52%;
+      background:linear-gradient(160deg,#0d2b20 0%,#1a4a35 40%,#0f3d4a 100%);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:48px 52px;
+      position:relative;
+      overflow:hidden;
+    }
+    .panel-left::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 20%, rgba(224,121,43,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 10% 90%, rgba(26,140,120,.15) 0%, transparent 60%);
+    }
+    canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.15;pointer-events:none}
+    .left-content{position:relative;z-index:1}
+    .logo-wrap{margin-bottom:48px}
+    .logo-wrap img{height:52px;width:auto;filter:brightness(0) invert(1);opacity:.92}
+    .hero-text h1{
+      font-family:'DM Serif Display',serif;
+      font-size:clamp(1.9rem,3.1vw,3.2rem);
+      font-weight:400;
+      color:#fff;
+      line-height:1.2;
+      margin-bottom:16px;
+    }
+    .hero-text h1 em{font-style:italic;color:#7dd3c0}
+    .hero-text p{font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.7;max-width:360px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      font-size:.7rem;font-weight:600;color:rgba(255,255,255,.7);
+      letter-spacing:.04em;
+    }
+    .badge i{font-size:.65rem;color:#7dd3c0}
+    .left-footer{
+      position:relative;z-index:1;
+      font-size:.68rem;color:rgba(255,255,255,.3);
+      border-top:1px solid rgba(255,255,255,.08);
+      padding-top:16px;
+    }
+    /* Panel derecho — formulario */
+    .panel-right{
+      flex:1;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 40px;
+    }
+    .form-wrap{width:100%;max-width:380px}
+    .form-titulo{font-size:1.5rem;font-weight:600;color:#111827;margin-bottom:6px}
+    .form-sub{font-size:.84rem;color:#6b7280;margin-bottom:32px}
+    .field{margin-bottom:18px}
+    .field label{display:block;font-size:.73rem;font-weight:600;color:#374151;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+    .field input{
+      width:100%;
+      padding:11px 14px;
+      border:1.5px solid #e5e7eb;
+      border-radius:10px;
+      font-size:.9rem;
+      font-family:'Poppins',sans-serif;
+      color:#111827;
+      transition:border-color .18s,box-shadow .18s;
+      outline:none;
+    }
+    .field input:focus{border-color:#1a7a5e;box-shadow:0 0 0 3px rgba(26,122,94,.1)}
+    .btn-login{
+      width:100%;padding:12px;
+      background:linear-gradient(135deg,#1a7a5e 0%,#1a5a6e 100%);
+      border:none;border-radius:10px;
+      color:#fff;font-size:.9rem;font-weight:700;
+      font-family:'Poppins',sans-serif;
+      cursor:pointer;
+      transition:opacity .18s,transform .15s;
+      margin-top:4px;
+    }
+    .btn-login:hover{opacity:.92;transform:translateY(-1px)}
+    .btn-login:active{transform:translateY(0)}
+    .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .error-box{
+      background:#fef2f2;border:1px solid #fecaca;
+      border-radius:8px;padding:10px 14px;
+      font-size:.8rem;color:#dc2626;
+      margin-bottom:16px;display:none;
+    }
+    .cambio-box{
+      background:#f0fdf4;border:1px solid #86efac;
+      border-radius:8px;padding:10px 14px;
+      font-size:.8rem;color:#15803d;
+      margin-bottom:16px;display:none;
+    }
+    .divider{border:none;border-top:1px solid #f3f4f6;margin:24px 0}
+    .info-creds{background:#f9fafb;border-radius:10px;padding:14px;font-size:.78rem;color:#6b7280;line-height:1.6}
+    .info-creds strong{color:#374151}
+    .btn-publico{
+      display:block;width:100%;padding:11px;
+      background:transparent;
+      border:1.5px solid #e5e7eb;
+      border-radius:10px;
+      color:#6b7280;font-size:.84rem;font-weight:500;
+      font-family:'Poppins',sans-serif;
+      text-align:center;text-decoration:none;
+      transition:border-color .18s,color .18s,background .18s;
+    }
+    .btn-publico:hover{border-color:#1a7a5e;color:#1a7a5e;background:#f0fdf4}
+    /* Responsive */
+    @media(max-width:768px){
+      .panel-left{display:none}
+      .panel-right{padding:32px 24px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Panel izquierdo -->
+<div class="panel-left">
+  <canvas id="c"></canvas>
+  <div class="left-content">
+    <div class="logo-wrap">
+        <div id="logoTxt" style="display:none;font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;line-height:1.2">Secretaría de<br>Bosques</div>
+    </div>
+    <div class="hero-text">
+      <h1>Vivero<br><em>Lemú</em> —<br>El Maitén</h1>
+      <p>Gestión de asistencia, novedades y actividades del personal del vivero de la Secretaría de Bosques.</p>
+      <div class="badges">
+        <span class="badge"><i class="fa-solid fa-seedling"></i>Producción forestal</span>
+        <span class="badge"><i class="fa-solid fa-location-dot"></i>El Maitén · Chubut</span>
+        <span class="badge"><i class="fa-solid fa-mobile-screen"></i>PWA móvil</span>
+        <span class="badge"><i class="fa-solid fa-tree"></i>Bosque Nativo</span>
+      </div>
+    </div>
+  </div>
+  <div class="left-footer">
+    Vivero Lemú · Secretaría de Bosques · Provincia del Chubut · 2026
+  </div>
+</div>
+
+<!-- Panel derecho -->
+<div class="panel-right">
+  <div class="form-wrap">
+    <img src="img/LogoBosques.png" alt="Secretaría de Bosques — Gobierno del Chubut" style="height:38px;width:auto;margin-bottom:22px" onerror="this.style.display='none'">
+    <p class="form-titulo">Bienvenido/a</p>
+    <p class="form-sub">Ingresá con tu usuario del SUIF</p>
+
+    <div class="error-box" id="errBox"></div>
+
+    <form id="frm">
+      <div class="field">
+        <label>Email</label>
+        <input type="text" id="identifier" placeholder="nombre.apellido" autocomplete="username" maxlength="190" required/>
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password" required/>
+      </div>
+      <button type="submit" class="btn-login" id="btnLogin">
+        <i class="fa-solid fa-right-to-bracket" style="margin-right:7px"></i>Ingresar
+      </button>
+    </form>
+
+    <hr class="divider">
+
+    <div class="info-creds">
+      <i class="fa-solid fa-circle-info" style="color:#1a7a5e;margin-right:6px"></i>
+      Usá el mismo usuario y contraseña que en el <strong>SUIF</strong>.<br>
+      Si tenés problemas para ingresar, contactá a la administración.
+    </div>
+  </div>
+</div>
+
+<script>
+// Canvas animado
+const c=document.getElementById('c'),ctx=c.getContext('2d');
+let W,H,nodes;
+function resize(){W=c.width=c.parentElement.offsetWidth;H=c.height=c.parentElement.offsetHeight}
+function mk(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.6+.8}}
+function init(){resize();nodes=Array.from({length:50},mk)}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<120){ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=`rgba(125,211,192,${(1-d/120)*.5})`;ctx.lineWidth=.7;ctx.stroke()}
+  }
+  nodes.forEach(n=>{ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle='rgba(125,211,192,.65)';ctx.fill()});
+}
+function update(){nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1})}
+function loop(){update();draw();requestAnimationFrame(loop)}
+init();loop();window.addEventListener('resize',resize);
+
+// Login
+document.getElementById('frm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('btnLogin');
+  const err=document.getElementById('errBox');
+  err.style.display='none';
+  btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin" style="margin-right:7px"></i>Ingresando…';
+  try{
+    const r=await fetch('/api/auth/login',{
+      method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({identifier:document.getElementById('identifier').value.trim(),password:document.getElementById('pass').value})
+    });
+    const d=await r.json();
+    if(!r.ok){
+      err.textContent=d.error||'Usuario o contraseña incorrectos';
+      err.style.display='block';
+      btn.disabled=false;
+      btn.innerHTML='<i class="fa-solid fa-right-to-bracket" style="margin-right:7px"></i>Ingresar';
+      return;
+    }
+    location.href='/index.html';
+  }catch{
+    err.textContent='Error de conexión con el servidor';
+    err.style.display='block';
+    btn.disabled=false;
+    btn.innerHTML='<i class="fa-solid fa-right-to-bracket" style="margin-right:7px"></i>Ingresar';
+  }
+});
+</script>
+</body>
+</html>
