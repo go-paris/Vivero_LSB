@@ -123,7 +123,7 @@ router.post('/cambiar-password', requireAuth, async (req, res) => {
     return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
   if (password_nuevo.length < 12) {
-    return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 8 caracteres' });
+    return res.status(400).json({ error: 'La nueva contraseña debe tener al menos 12 caracteres' });
   }
   try {
     const [rows] = await db.query(

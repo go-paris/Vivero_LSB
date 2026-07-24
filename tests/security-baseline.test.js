@@ -76,6 +76,16 @@ test('el primer ingreso va directo al cambio obligatorio de clave', () => {
   assert.doesNotMatch(login, /location\.href\s*=\s*['"]\/index\.html['"]/);
 });
 
+test('el cambio de clave exige doce caracteres en cliente y servidor', () => {
+  const page = read('public/cambiar-clave.html');
+  const auth = read('routes/auth.js');
+  assert.match(page, /minlength="12"/);
+  assert.match(page, /passNueva\.length < 12/);
+  assert.match(page, /Mínimo 12 caracteres/);
+  assert.match(auth, /password_nuevo\.length < 12/);
+  assert.match(auth, /al menos 12 caracteres/);
+});
+
 test('las asistencias se rectifican con auditoría y nunca se borran', () => {
   const routes = read('routes/vivero.js');
   assert.match(routes, /ASISTENCIA_RECTIFICADA/);
