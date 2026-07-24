@@ -239,7 +239,7 @@ document.getElementById('frm').addEventListener('submit',async e=>{
       btn.innerHTML='<i class="fa-solid fa-right-to-bracket" style="margin-right:7px"></i>Ingresar';
       return;
     }
-    location.href='/index.html';
+    location.replace(d.debe_cambiar_clave ? '/cambiar-clave.html' : '/index.html');
   }catch{
     err.textContent='Error de conexión con el servidor';
     err.style.display='block';

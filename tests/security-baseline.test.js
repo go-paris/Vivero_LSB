@@ -67,6 +67,15 @@ test('el login evita enumeración y aplica bloqueo persistente', () => {
   assert.match(auth, /ultimo_acceso = NOW\(\)/);
 });
 
+test('el primer ingreso va directo al cambio obligatorio de clave', () => {
+  const login = read('public/login.html');
+  assert.match(
+    login,
+    /location\.replace\(d\.debe_cambiar_clave\s*\?\s*['"]\/cambiar-clave\.html['"]\s*:\s*['"]\/index\.html['"]\)/
+  );
+  assert.doesNotMatch(login, /location\.href\s*=\s*['"]\/index\.html['"]/);
+});
+
 test('las asistencias se rectifican con auditoría y nunca se borran', () => {
   const routes = read('routes/vivero.js');
   assert.match(routes, /ASISTENCIA_RECTIFICADA/);
