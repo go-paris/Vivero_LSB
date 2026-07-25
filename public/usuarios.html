@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Usuarios — Vivero Lemú</title>
+  <title>Usuarios — Vivero LEMU</title>
   <style>
     :root{--forest:#173f34;--teal:#25aaa7;--line:#dbe4e1;--muted:#65736f;--danger:#a33;--bg:#f5f7f6}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#1e2c28}
@@ -16,7 +16,7 @@
 </head>
 <body>
 <script src="/security.js"></script>
-<header><strong>Vivero Provincial Lemú · Administración de usuarios</strong><a href="/index.html">← Volver</a></header>
+<header><strong>Vivero Provincial LEMU · Administración de usuarios</strong><a href="/index.html">← Volver</a></header>
 <main class="wrap">
   <section class="card">
     <h1>Usuarios</h1>
@@ -27,7 +27,7 @@
         <label>Usuario<input id="email" required type="text" maxlength="190" placeholder="nombre.apellido"></label>
         <label>Rol<select id="rol"><option value="usuario">Usuario normal</option></select></label>
         <label>Clave temporal<input id="password" required type="password" minlength="12" autocomplete="new-password"></label>
-        <label style="grid-column:1/-1">Motivo del alta<input id="motivo" required minlength="5" maxlength="500" value="Alta para operación del Vivero Lemú"></label>
+        <label style="grid-column:1/-1">Motivo del alta<input id="motivo" required minlength="5" maxlength="500" value="Alta para operación del Vivero LEMU"></label>
       </div>
       <p class="notice" id="notice"></p>
       <button class="primary" type="submit">Crear usuario</button>
@@ -51,7 +51,7 @@ async function init(){
   await loadUsers();
 }
 async function loadUsers(){const users=await request('/api/usuarios');document.getElementById('rows').innerHTML=users.map(u=>`<tr><td><strong>${esc(u.nombre)}</strong><br><small>${esc(u.email)}</small></td><td>${esc(u.rol)}</td><td><span class="status ${u.activo?'':'inactive'}">${u.activo?'Activo':'Inactivo'}</span>${u.bloqueado_hasta?'<br><small>Bloqueado</small>':''}</td><td><div class="actions"><button class="secondary" onclick="temporaryPassword(${u.id})">Clave temporal</button><button class="secondary" onclick="unlock(${u.id})">Desbloquear</button><button class="${u.activo?'danger':'secondary'}" onclick="toggleActive(${u.id},${u.activo?0:1})">${u.activo?'Desactivar':'Activar'}</button></div></td></tr>`).join('')}
-document.getElementById('createForm').addEventListener('submit',async event=>{event.preventDefault();notice.textContent='';try{await request('/api/usuarios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:nombre.value,email:email.value,rol:rol.value,password_temporal:password.value,motivo:motivo.value})});event.target.reset();motivo.value='Alta para operación del Vivero Lemú';await loadUsers()}catch(error){notice.textContent=error.message}});
+document.getElementById('createForm').addEventListener('submit',async event=>{event.preventDefault();notice.textContent='';try{await request('/api/usuarios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre:nombre.value,email:email.value,rol:rol.value,password_temporal:password.value,motivo:motivo.value})});event.target.reset();motivo.value='Alta para operación del Vivero LEMU';await loadUsers()}catch(error){notice.textContent=error.message}});
 async function temporaryPassword(id){const password=prompt('Ingresá una clave temporal de al menos 12 caracteres. No se mostrará nuevamente.');if(!password)return;const motivo=prompt('Motivo del restablecimiento:');if(!motivo)return;try{await request(`/api/usuarios/${id}/clave-temporal`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password_temporal:password,motivo})});alert('Clave temporal asignada. Entregala por un canal seguro.')}catch(error){alert(error.message)}}
 async function unlock(id){const motivo=prompt('Motivo del desbloqueo:');if(!motivo)return;try{await request(`/api/usuarios/${id}/desbloquear`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({motivo})});await loadUsers()}catch(error){alert(error.message)}}
 async function toggleActive(id,activo){const motivo=prompt(`Motivo para ${activo?'activar':'desactivar'}: `);if(!motivo)return;try{await request(`/api/usuarios/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({activo:!!activo,motivo})});await loadUsers()}catch(error){alert(error.message)}}

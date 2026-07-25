@@ -7,6 +7,7 @@ const https = require('https');
 const router = express.Router();
 
 const SMN_AREA_ID = 797;
+const SMN_LOCATION_ID = 5756;
 const SMN_AREA_PAGE = `https://ws2.smn.gob.ar/alertas_area?loc=${SMN_AREA_ID}`;
 const SMN_API = 'https://ws1.smn.gob.ar/v1';
 const EVENTOS = new Map([
@@ -66,6 +67,46 @@ function reportFor(payload, eventId, level) {
   return report?.levels?.find(item => Number(item.level) === Number(level)) || null;
 }
 
+function nurseryRecommendations(phenomenon, level) {
+  const common = [
+    'Revisar el aviso oficial antes de asignar tareas al aire libre.',
+    'Asegurar herramientas, bandejas, macetas y materiales sueltos.',
+    'Verificar drenajes, reservas de agua y accesos antes del evento.',
+  ];
+  const byPhenomenon = {
+    viento: [
+      'Asegurar coberturas, media sombra, nylon e invernáculos sin trabajar en altura durante ráfagas.',
+      'Trasladar plantines y bandejas livianas a sectores protegidos.',
+    ],
+    'viento zonda': [
+      'Suspender labores con fuego, chispas o maquinaria que pueda iniciar incendios.',
+      'Proteger plantines de la deshidratación y controlar riego cuando sea seguro.',
+    ],
+    nevada: [
+      'Resguardar plantines sensibles y proteger cañerías, bombas y sistemas de riego contra congelamiento.',
+      'No retirar nieve de techos o estructuras mientras persista el evento; inspeccionarlos cuando sea seguro.',
+    ],
+    lluvia: [
+      'Liberar canaletas y desagües, y elevar insumos sensibles a la humedad.',
+      'Evitar tareas eléctricas y circulación por sectores anegados.',
+    ],
+    tormenta: [
+      'Suspender tareas a cielo abierto y alejarse de árboles aislados, alambrados y estructuras metálicas.',
+      'Desconectar equipos exteriores únicamente si puede hacerse antes del evento y sin riesgo.',
+    ],
+    niebla: ['Reducir desplazamientos y usar señalización visible en accesos y zonas de circulación.'],
+    humo: ['Suspender quemas y tareas que generen polvo; reducir la exposición al aire libre.'],
+    'ceniza volcánica': ['Cubrir depósitos de agua, plantines e insumos y evitar remover ceniza en seco.'],
+  };
+  const byLevel = {
+    advertencia: ['Mantener seguimiento periódico de las condiciones y preparar medidas preventivas.'],
+    amarillo: ['Informar al equipo y reprogramar las tareas más expuestas si las condiciones empeoran.'],
+    naranja: ['Suspender tareas expuestas, resguardar al personal y preparar el cierre preventivo de sectores.'],
+    rojo: ['Interrumpir actividades, resguardar al personal y seguir las instrucciones de las autoridades locales.'],
+  };
+  return [...common, ...(byPhenomenon[phenomenon] || []), ...(byLevel[level] || [])];
+}
+
 function normalizeAlerts(payload, area) {
   const result = [];
   for (const day of payload.warnings || []) {
@@ -88,6 +129,7 @@ function normalizeAlerts(payload, area) {
         vigencia: `${day.date}${periods.length ? ` · ${periods.join(', ')}` : ''}`,
         detalle: report?.description?.trim() || '',
         recomendaciones: report?.instruction?.trim() || '',
+        recomendaciones_vivero: nurseryRecommendations(phenomenon, meta.nombre),
         fuente_url: SMN_AREA_PAGE,
       });
     }
@@ -102,44 +144,43 @@ async function fetchAreaAlerts() {
     fetchJSON(`${SMN_API}/georef/area/${SMN_AREA_ID}?show_geometry=false`, auth),
     fetchJSON(`${SMN_API}/warning/alert/area/${SMN_AREA_ID}`, auth),
   ]);
+  const [currentResult, forecastResult] = await Promise.allSettled([
+    fetchJSON(`${SMN_API}/weather/location/${SMN_LOCATION_ID}`, auth),
+    fetchJSON(`${SMN_API}/forecast/location/${SMN_LOCATION_ID}`, auth),
+  ]);
   return {
     area,
     updated: warnings.updated || null,
     alerts: normalizeAlerts(warnings, area),
+    current: currentResult.status === 'fulfilled' ? currentResult.value : null,
+    forecast: forecastResult.status === 'fulfilled' ? forecastResult.value : null,
   };
 }
 
 router.get('/', requireAuth, async (req, res) => {
-  const [weatherResult, areaResult] = await Promise.allSettled([
-    fetchJSON('https://ws.smn.gob.ar/map_items/weather'),
-    fetchAreaAlerts(),
-  ]);
-
-  let clima = null;
-  if (weatherResult.status === 'fulfilled' && Array.isArray(weatherResult.value)) {
-    const localidad = weatherResult.value.find(item =>
-      (item.name || item.nombre || '').toLowerCase().includes('esquel'));
-    if (localidad) {
-      const w = localidad.weather || localidad;
-      clima = {
-        nombre: localidad.name || localidad.nombre,
-        referencia: 'Estación Aeropuerto Esquel (SMN) · referencia regional',
-        temperatura: w.temp ?? w.temperatura ?? null,
-        temp_max: w.tempMax ?? w.temp_max ?? null,
-        temp_min: w.tempMin ?? w.temp_min ?? null,
-        humedad: w.humidity ?? w.humedad ?? null,
-        viento_vel: w.windSpeed ?? w.viento_velocidad ?? null,
-        viento_dir: w.windDirection ?? w.viento_direccion ?? null,
-        descripcion: w.weatherDescription ?? w.descripcion ?? null,
-        icon: w.weatherIcon ?? w.icono ?? null,
-        presion: w.pressure ?? w.presion ?? null,
-      };
-    }
-  }
+  const [areaResult] = await Promise.allSettled([fetchAreaAlerts()]);
 
   const alertsAvailable = areaResult.status === 'fulfilled';
   const areaData = alertsAvailable ? areaResult.value : null;
   if (!alertsAvailable) console.error('[clima/alertas]', areaResult.reason?.message || 'Fuente no disponible');
+  const current = areaData?.current || null;
+  const daily = areaData?.forecast?.forecast?.[0] || null;
+  const period = daily?.afternoon || daily?.morning || daily?.night || daily?.early_morning || null;
+  const clima = (current || daily) ? {
+    nombre: current?.location?.name || 'Esquel',
+    referencia: 'Estación Aeropuerto Esquel (SMN) · referencia regional',
+    temperatura: current?.temperature ?? period?.temperature ?? null,
+    temp_max: daily?.temp_max ?? null,
+    temp_min: daily?.temp_min ?? null,
+    humedad: current?.humidity ?? period?.humidity ?? null,
+    viento_vel: current?.wind?.speed ?? period?.wind?.speed ?? null,
+    viento_dir: current?.wind?.direction ?? period?.wind?.direction ?? null,
+    descripcion: current?.weather?.description ?? period?.weather?.description ?? null,
+    icon: current?.weather?.id ?? period?.weather?.id ?? null,
+    presion: current?.pressure ?? null,
+    observacion_actualizada: current?.date ?? null,
+    pronostico_actualizado: areaData?.forecast?.updated ?? null,
+  } : null;
 
   res.json({
     ok: true,
@@ -155,4 +196,4 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
-module.exports._test = { normalizeAlerts, tokenFromAreaPage };
+module.exports._test = { normalizeAlerts, nurseryRecommendations, tokenFromAreaPage };

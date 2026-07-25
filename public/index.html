@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Vivero Lemú — Secretaría de Bosques Chubut</title>
+  <title>Vivero LEMU — Secretaría de Bosques Chubut</title>
   <meta name="theme-color" content="#1C3A2E"/>
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="Vivero Lemú"/>
+  <meta name="apple-mobile-web-app-title" content="Vivero LEMU"/>
   <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -20,14 +20,20 @@
       --text:#2D3748;--muted:#6B7A8D;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{max-width:100%;overflow-x:hidden}
     body{font-family:'Poppins',sans-serif;background:var(--surface);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
     h1,h2,h3,.hind{font-family:'Hind',sans-serif}
 
     /* ── NAVBAR ── */
-    .brand-wrap{position:sticky;top:0;z-index:51;background:#fff;border-bottom:1px solid #E4E7EF;padding:0 16px;height:52px;display:flex;align-items:center}
-    .brand-wrap img{height:36px;width:auto;display:block}
+    .brand-wrap{position:sticky;top:0;z-index:51;background:#fff;border-bottom:1px solid #E4E7EF;padding:0 16px;height:62px;display:flex;align-items:center}
+    .brand-inner{display:flex;align-items:center;gap:14px;width:100%;min-width:0}
+    .brand-wrap img{height:auto;width:min(430px,62vw);max-height:44px;display:block;object-fit:contain;object-position:left center;flex-shrink:1}
+    .brand-divider{width:1px;height:36px;background:var(--border);flex-shrink:0}
+    .brand-meta{min-width:0}
+    .brand-name{font-family:'Hind',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.1;white-space:nowrap}
+    .brand-tagline{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px;line-height:1.35}
     .navbar{
-      position:sticky;top:52px;z-index:100;
+      position:sticky;top:62px;z-index:100;
       background:var(--bosque);
       border-bottom:1px solid rgba(255,255,255,.08);
       padding:0 16px;
@@ -39,7 +45,8 @@
     .nav-logo-fb{width:30px;height:30px;border-radius:6px;background:linear-gradient(135deg,var(--naranja),var(--teal));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff}
     .nav-title{font-family:'Hind',sans-serif;font-size:15px;font-weight:600;color:#fff;line-height:1.1}
     .nav-title span{display:block;font-size:10px;font-weight:400;color:rgba(255,255,255,.45);font-family:'Poppins',sans-serif}
-    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-right{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
+    .nb-ghost{flex:0 0 auto;white-space:nowrap}
     .nav-user{font-size:12px;color:rgba(255,255,255,.6);font-weight:500}
     .nav-btn{width:32px;height:32px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
     .nav-btn:hover{background:rgba(255,255,255,.14);color:#fff}
@@ -74,7 +81,7 @@
     .tabs{
       display:flex;background:var(--card);
       border-bottom:2px solid var(--border);
-      position:sticky;top:108px;z-index:90;
+      position:sticky;top:118px;z-index:90;
       padding:0 16px;
     }
     .tab{
@@ -389,6 +396,10 @@
     .alerta-item.AC .alerta-titulo{color:#92400e}
     .alerta-zona{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:4px}
     .alerta-detalle{font-size:12px;color:var(--text);line-height:1.55}
+    .alerta-vivero{margin-top:10px;padding:10px 11px;border-radius:8px;background:rgba(255,255,255,.72);border:1px solid rgba(28,58,46,.12)}
+    .alerta-vivero-title{font-size:11px;font-weight:800;color:var(--bosque);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .alerta-vivero ul{margin:0;padding-left:17px}
+    .alerta-vivero li{font-size:11px;line-height:1.5;color:var(--text);margin:3px 0}
     .clima-empty{text-align:center;padding:28px;color:var(--muted);font-size:12px}
     .clima-empty i{font-size:28px;opacity:.25;display:block;margin-bottom:10px}
     .clima-fuente{font-size:10px;color:var(--muted);text-align:right;margin-top:8px;display:flex;align-items:center;justify-content:flex-end;gap:4px}
@@ -415,7 +426,41 @@
     .actividad-popup h2{font-family:'Hind',sans-serif;font-size:17px;line-height:1.25;color:var(--bosque);margin:0}.actividad-popup-close{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:4px}
     .actividad-popup-meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:10px;color:var(--muted);margin-top:8px}.actividad-popup-text{font-size:11px;line-height:1.5;color:var(--text);margin-top:9px}
     .actividad-popup-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:12px}.actividad-popup-actions button{font-family:'Poppins',sans-serif;border-radius:7px;padding:7px 10px;font-size:10px;font-weight:700;cursor:pointer}
-    @media(max-width:600px){.actividad-popup{top:10px;right:10px;width:calc(100vw - 20px)}}
+    @media(max-width:700px){
+      .brand-wrap{height:58px;padding:0 10px}
+      .brand-inner{gap:8px}
+      .brand-wrap img{width:min(220px,64vw);max-height:40px}
+      .brand-divider{height:32px}
+      .brand-name{font-size:12px}
+      .brand-tagline{font-size:9px;max-width:96px}
+      .navbar{top:58px;height:54px;padding:0 10px;justify-content:flex-start}
+      .nav-right{width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:5px 0}
+      .nav-right::-webkit-scrollbar{display:none}
+      .nav-right>a,.nav-right>button,.nav-right>div{flex:0 0 auto}
+      .nav-perfil-txt{max-width:72px}
+      .tabs{top:112px;padding:0 4px;overflow-x:auto;scrollbar-width:none}
+      .tabs::-webkit-scrollbar{display:none}
+      .tab{min-width:74px;flex:1 0 74px;padding:11px 3px 9px;font-size:10px}
+      .hero-bar{padding:17px 14px 16px}
+      .panel{padding:10px}
+      .card{padding:13px}
+      .prod-kpis{grid-template-columns:1fr}
+      .indicador-grid{grid-template-columns:1fr}
+      .med-form{grid-template-columns:1fr}
+      .med-full{grid-column:auto}
+      .clima-hero{padding:16px;gap:11px}
+      .clima-temp{font-size:43px}
+      .clima-stats{grid-template-columns:repeat(2,1fr)}
+      .clima-stats .clima-stat:last-child{grid-column:1/-1}
+      .actividad-popup{top:10px;right:10px;width:calc(100vw - 20px)}
+    }
+    @media(max-width:360px){
+      .brand-wrap img{width:min(190px,60vw)}
+      .brand-tagline{display:none}
+      .nav-perfil-txt{display:none}
+      .clima-stats{grid-template-columns:1fr}
+      .clima-stats .clima-stat:last-child{grid-column:auto}
+    }
   </style>
 </head>
 <body>
@@ -424,13 +469,13 @@
 <!-- NAVBAR -->
 <!-- FRANJA INSTITUCIONAL -->
 <div class="brand-wrap">
-  <div style="display:flex;align-items:center;gap:14px;flex:1">
-    <img src="src/LogoBosques.png" alt="Secretaría de Bosques — Gobierno del Chubut"
-      style="height:36px;width:auto;flex-shrink:0" onerror="this.style.display='none'">
-    <div style="width:1px;height:32px;background:var(--border);flex-shrink:0"></div>
-    <div>
-      <div style="font-family:'Hind',sans-serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.2">Vivero Provincial Lemú</div>
-      <div style="font-size:10px;color:var(--muted);font-style:italic;margin-top:1px">Reforestamos el patrimonio natural de los chubutenses</div>
+  <div class="brand-inner">
+    <img src="src/LogoSB.jpg" alt="Secretaría de Bosques — Gobierno del Chubut"
+      onerror="this.style.display='none'">
+    <div class="brand-divider"></div>
+    <div class="brand-meta">
+      <div class="brand-name">Vivero LEMU</div>
+      <div class="brand-tagline">El Maitén · Producción forestal</div>
     </div>
   </div>
 </div>
@@ -1188,7 +1233,7 @@ function mostrarGeoResultado(ok, msg) {
     const bloqueo = document.createElement('p');
     bloqueo.className = 'geo-bloqueo-msg';
     bloqueo.style.cssText = 'font-size:12px;color:#6b7280;margin-top:10px;line-height:1.6;text-align:center';
-    bloqueo.innerHTML = 'Para registrar tu asistencia debés estar dentro del <strong>Vivero Provincial Lemú</strong>.<br>Acercate al vivero e intentá nuevamente.';
+    bloqueo.innerHTML = 'Para registrar tu asistencia debés estar dentro del <strong>Vivero Provincial LEMU</strong>.<br>Acercate al vivero e intentá nuevamente.';
     res.after(bloqueo);
     btnOk.style.display = 'none';
   }
@@ -1220,6 +1265,7 @@ async function comprobarAlertaClimaticaInicio() {
         ${principal.vigencia ? `<span><i class="fa-regular fa-calendar"></i> ${escH(principal.vigencia)}</span>` : ''}
       </div>
       ${principal.detalle ? `<div class="clima-popup-detalle">${escH(principal.detalle)}</div>` : ''}
+      ${renderRecomendacionesVivero(principal)}
       ${alertas.length > 1 ? `<div style="font-size:11px;color:var(--muted);margin-top:10px">Hay ${alertas.length} avisos vigentes para el área.</div>` : ''}`;
     const overlay = document.getElementById('climaPopupOverlay');
     overlay.dataset.firma = firma;
@@ -2245,6 +2291,17 @@ async function enviarSubregistro(tipo, payload) {
 }
 
 // ── CLIMA ──
+function renderRecomendacionesVivero(alerta) {
+  const items = Array.isArray(alerta?.recomendaciones_vivero)
+    ? alerta.recomendaciones_vivero.filter(Boolean)
+    : [];
+  if (!items.length) return '';
+  return `<div class="alerta-vivero">
+    <div class="alerta-vivero-title"><i class="fa-solid fa-seedling"></i>Recomendaciones para el Vivero LEMU</div>
+    <ul>${items.map(item => `<li>${escH(item)}</li>`).join('')}</ul>
+  </div>`;
+}
+
 async function cargarClima() {
   const el = document.getElementById('climaContenido');
   el.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i>Consultando el SMN…</div>';
@@ -2273,11 +2330,11 @@ async function cargarClima() {
       html += `<div class="clima-stats">
         <div class="clima-stat">
           <div class="clima-stat-val">${c.temp_max != null ? c.temp_max + '°' : '—'}</div>
-          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-up" style="color:var(--rojo);margin-right:3px"></i>Máx</div>
+          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-up" style="color:var(--rojo);margin-right:3px"></i>Máxima hoy</div>
         </div>
         <div class="clima-stat">
           <div class="clima-stat-val">${c.temp_min != null ? c.temp_min + '°' : '—'}</div>
-          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-down" style="color:var(--teal);margin-right:3px"></i>Mín</div>
+          <div class="clima-stat-lbl"><i class="fa-solid fa-arrow-down" style="color:var(--teal);margin-right:3px"></i>Mínima hoy</div>
         </div>
         <div class="clima-stat">
           <div class="clima-stat-val">${c.humedad != null ? c.humedad + '%' : '—'}</div>
@@ -2321,6 +2378,7 @@ async function cargarClima() {
           ${a.vigencia ? `<div class="alerta-zona"><i class="fa-regular fa-calendar"></i>${escH(a.vigencia)}</div>` : ''}
           ${a.detalle ? `<div class="alerta-detalle">${escH(a.detalle)}</div>` : ''}
           ${a.recomendaciones ? `<details style="margin-top:8px"><summary style="cursor:pointer;font-size:11px;font-weight:700">Recomendaciones oficiales</summary><div class="alerta-detalle" style="white-space:pre-line;margin-top:6px">${escH(a.recomendaciones)}</div></details>` : ''}
+          ${renderRecomendacionesVivero(a)}
         </div>`).join('');
     } else {
       html += `<div class="clima-empty" style="padding:16px">
