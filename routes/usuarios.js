@@ -12,6 +12,11 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function requireDirector(req, res, next) {
+  if (req.session?.usuario?.rol !== 'director_general') return res.status(403).json({ error: 'Solo disponible para Dirección General' });
+  next();
+}
+
 function validReason(value) {
   return typeof value === 'string' && value.trim().length >= 5 && value.trim().length <= 500;
 }
@@ -43,6 +48,77 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error('[usuarios/get]', error.message);
     res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+});
+
+router.get('/actividad', requireDirector, async (req, res) => {
+  const requestedUserId = Number(req.query.usuario_id || 0);
+  const userId = Number.isInteger(requestedUserId) && requestedUserId > 0 ? requestedUserId : null;
+  const where = userId ? 'WHERE u.id = ?' : '';
+  const params = userId ? [userId] : [];
+  try {
+    const [usersResult, auditResult, attendanceResult, newsResult, filesResult] = await Promise.all([
+      db.query(
+        `SELECT id, email, nombre, rol, activo, debe_cambiar_clave,
+                intentos_fallidos, bloqueado_hasta, ultimo_acceso, creado_en
+         FROM vivero_usuarios ORDER BY activo DESC, nombre ASC`
+      ),
+      db.query(
+        `SELECT a.id, a.actor_usuario_id AS usuario_id, u.nombre, u.email,
+                a.accion, a.entidad, a.entidad_id, a.motivo, a.creado_en
+         FROM vivero_auditoria a
+         LEFT JOIN vivero_usuarios u ON u.id = a.actor_usuario_id
+         ${where.replaceAll('u.id', 'a.actor_usuario_id')}
+         ORDER BY a.creado_en DESC LIMIT 200`,
+        params
+      ),
+      db.query(
+        `SELECT a.id, a.usuario_id, u.nombre, u.email,
+                CONCAT('FICHAJE_', UPPER(a.tipo)) AS accion,
+                'asistencia' AS entidad, CAST(a.id AS CHAR) AS entidad_id,
+                CONCAT('Distancia validada: ', a.distancia_vivero_m, ' m') AS motivo,
+                a.timestamp_registro AS creado_en
+         FROM vivero_asistencia a
+         JOIN vivero_usuarios u ON u.id = a.usuario_id
+         ${where}
+         ORDER BY a.timestamp_registro DESC LIMIT 200`,
+        params
+      ),
+      db.query(
+        `SELECT n.id, n.usuario_id, u.nombre, u.email,
+                CASE n.tipo WHEN 'instruccion' THEN 'INSTRUCCION_CREADA'
+                  WHEN 'reporte' THEN 'REPORTE_PUBLICADO' ELSE 'NOVEDAD_PUBLICADA' END AS accion,
+                n.tipo AS entidad, CAST(n.id AS CHAR) AS entidad_id,
+                LEFT(n.contenido, 180) AS motivo, n.creado_en
+         FROM vivero_novedades n
+         JOIN vivero_usuarios u ON u.id = n.usuario_id
+         ${where}
+         ORDER BY n.creado_en DESC LIMIT 200`,
+        params
+      ),
+      db.query(
+        `SELECT f.id, f.usuario_id, u.nombre, u.email,
+                'ARCHIVO_SUBIDO' AS accion, 'archivo' AS entidad,
+                CAST(f.id AS CHAR) AS entidad_id, f.nombre_orig AS motivo, f.creado_en
+         FROM vivero_archivos f
+         JOIN vivero_usuarios u ON u.id = f.usuario_id
+         ${where}
+         ORDER BY f.creado_en DESC LIMIT 200`,
+        params
+      ),
+    ]);
+    const eventos = [
+      ...auditResult[0],
+      ...attendanceResult[0],
+      ...newsResult[0],
+      ...filesResult[0],
+    ]
+      .sort((left, right) => new Date(right.creado_en) - new Date(left.creado_en))
+      .slice(0, 250);
+    res.json({ usuarios: usersResult[0], eventos });
+  } catch (error) {
+    console.error('[usuarios/actividad]', error.message);
+    res.status(500).json({ error: 'Error al obtener la actividad de usuarios' });
   }
 });
 

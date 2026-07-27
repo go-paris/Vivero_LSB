@@ -25,3 +25,14 @@ test('altas, cambios, claves y desbloqueos se auditan', () => {
     assert.match(route, new RegExp(action));
   }
 });
+
+test('la actividad consolidada es exclusiva del Director General', () => {
+  assert.match(route, /router\.get\('\/actividad', requireDirector/);
+  assert.match(route, /req\.session\?\.usuario\?\.rol !== 'director_general'/);
+  for (const source of ['vivero_auditoria', 'vivero_asistencia', 'vivero_novedades', 'vivero_archivos']) {
+    assert.match(route, new RegExp(source));
+  }
+  const activityPage = fs.readFileSync(path.join(root, 'public', 'actividad.html'), 'utf8');
+  assert.match(activityPage, /\/api\/usuarios\/actividad/);
+  assert.match(activityPage, /currentUser\.rol!=='director_general'/);
+});

@@ -488,6 +488,9 @@
     <a href="gestion.html" id="navGestion" style="display:none;font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);text-decoration:none;font-weight:600">
       <i class="fa-solid fa-gauge-high"></i> Gestión
     </a>
+    <a href="actividad.html" id="navActividad" style="display:none;font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);text-decoration:none;font-weight:600">
+      <i class="fa-solid fa-clock-rotate-left"></i> Actividad
+    </a>
     <button class="nb-ghost" onclick="cambiarTab('productividad')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
       <i class="fa-solid fa-chart-bar" style="font-size:11px"></i>Productividad
     </button>
@@ -1018,6 +1021,9 @@ async function verificarSesion() {
       document.getElementById('btnSubirArch').style.display = 'inline-flex';
       document.getElementById('btnNuevaTarea').style.display = 'inline-flex';
       document.getElementById('btnNuevoLote').style.display = 'inline-flex';
+    }
+    if (usuario.rol === 'director_general') {
+      document.getElementById('navActividad').style.display = 'inline-flex';
     }
   } catch { location.href = '/login.html'; }
 }

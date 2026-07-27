@@ -67,6 +67,14 @@ test('el login evita enumeración y aplica bloqueo persistente', () => {
   assert.match(auth, /ultimo_acceso = NOW\(\)/);
 });
 
+test('los accesos correctos y cierres de sesión quedan auditados sin guardar la IP directa', () => {
+  const auth = read('routes/auth.js');
+  assert.match(auth, /INICIO_SESION/);
+  assert.match(auth, /FIN_SESION/);
+  assert.match(auth, /ip_hash/);
+  assert.match(auth, /createHash\('sha256'\)/);
+});
+
 test('el primer ingreso va directo al cambio obligatorio de clave', () => {
   const login = read('public/login.html');
   assert.match(

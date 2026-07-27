@@ -13,6 +13,25 @@ const dummyHash = bcrypt.hashSync('vivero-lemu-dummy-password', 12);
 const maxFailedAttempts = Number(process.env.AUTH_MAX_FAILED_ATTEMPTS || 5);
 const lockMinutes = Number(process.env.AUTH_LOCK_MINUTES || 15);
 
+function ipHash(req) {
+  return crypto.createHash('sha256')
+    .update(`${process.env.SESSION_SECRET || ''}|${req.ip || ''}`)
+    .digest('hex');
+}
+
+async function auditAccess(userId, action, req) {
+  try {
+    await db.query(
+      `INSERT INTO vivero_auditoria
+       (actor_usuario_id, accion, entidad, entidad_id, motivo, ip_hash)
+       VALUES (?, ?, 'sesion', ?, ?, ?)`,
+      [userId, action, String(userId), action === 'INICIO_SESION' ? 'Acceso correcto' : 'Cierre de sesión', ipHash(req)]
+    );
+  } catch (error) {
+    console.error('[auth/audit]', error.message);
+  }
+}
+
 // ── Middleware: verificar sesión ──────────────────────────
 function requireAuth(req, res, next) {
   if (!req.session?.usuario) {
@@ -54,6 +73,7 @@ router.post('/login', async (req, res) => {
       'UPDATE vivero_usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL, ultimo_acceso = NOW() WHERE id = ?',
       [usuario.id]
     );
+    await auditAccess(usuario.id, 'INICIO_SESION', req);
 
     // Guardar sesión
     req.session.usuario = {
@@ -80,7 +100,8 @@ router.post('/login', async (req, res) => {
 });
 
 // POST /api/auth/logout
-router.post('/logout', (req, res) => {
+router.post('/logout', async (req, res) => {
+  if (req.session?.usuario?.id) await auditAccess(req.session.usuario.id, 'FIN_SESION', req);
   req.session.destroy(() => {
     res.clearCookie('connect.sid');
     res.json({ ok: true });
