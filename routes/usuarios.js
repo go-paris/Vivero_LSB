@@ -231,8 +231,8 @@ router.post('/:id/clave-temporal', async (req, res) => {
 router.post('/:id/desbloquear', async (req, res) => {
   const actor = req.session.usuario;
   const id = Number(req.params.id);
-  const motivo = String(req.body.motivo || '').trim();
-  if (!Number.isInteger(id) || !validReason(motivo)) return res.status(400).json({ error: 'Datos inválidos' });
+  const motivo = 'Desbloqueo solicitado desde Administración de usuarios';
+  if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ error: 'Usuario inválido' });
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();

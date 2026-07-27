@@ -26,6 +26,12 @@ test('altas, cambios, claves y desbloqueos se auditan', () => {
   }
 });
 
+test('desbloquear no exige que el director escriba un motivo', () => {
+  assert.match(route, /const motivo = 'Desbloqueo solicitado desde Administración de usuarios'/);
+  assert.doesNotMatch(page, /Motivo del desbloqueo/);
+  assert.match(page, /body:'\{\}'/);
+});
+
 test('la actividad consolidada es exclusiva del Director General', () => {
   assert.match(route, /router\.get\('\/actividad', requireDirector/);
   assert.match(route, /req\.session\?\.usuario\?\.rol !== 'director_general'/);
