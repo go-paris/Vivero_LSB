@@ -940,7 +940,7 @@
   </div>
 </div>
 
-<aside class="actividad-popup" id="actividadPopup" role="status" aria-live="polite" aria-hidden="true">
+<aside class="actividad-popup" id="actividadPopup" role="status" aria-live="polite" aria-hidden="true" inert>
   <div class="actividad-popup-head">
     <div><div class="actividad-popup-kicker" id="actividadPopupNivel"><i class="fa-solid fa-bell"></i> Actividad próxima a vencer</div><h2 id="actividadPopupTitulo">Actividad pendiente</h2></div>
     <button class="actividad-popup-close" type="button" onclick="cerrarPopupActividad()" aria-label="Cerrar aviso"><i class="fa-solid fa-xmark"></i></button>
@@ -957,7 +957,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- ALERTA METEOROLÓGICA ACTIVA -->
-<div class="clima-popup-overlay" id="climaPopupOverlay" role="dialog" aria-modal="true" aria-labelledby="climaPopupTitulo" aria-hidden="true">
+<div class="clima-popup-overlay" id="climaPopupOverlay" role="dialog" aria-modal="true" aria-labelledby="climaPopupTitulo" aria-hidden="true" inert>
   <div class="clima-popup" id="climaPopup">
     <div class="clima-popup-head">
       <div><div class="clima-popup-kicker"><i class="fa-solid fa-triangle-exclamation"></i> Alerta meteorológica activa</div><h2 id="climaPopupTitulo">Aviso del SMN</h2></div>
@@ -1251,6 +1251,21 @@ function cerrarGeo() {
   document.getElementById('btnFichar').disabled = false;
 }
 
+let climaPopupTrigger = null;
+let actividadPopupTrigger = null;
+
+function ocultarPopupAccesible(container, focusTarget) {
+  if (container.contains(document.activeElement)) {
+    const fallback = document.getElementById('tabAsistencia');
+    const target = focusTarget?.isConnected ? focusTarget : fallback;
+    target?.focus({ preventScroll: true });
+    if (container.contains(document.activeElement)) document.activeElement?.blur();
+  }
+  container.inert = true;
+  container.classList.remove('show');
+  container.setAttribute('aria-hidden', 'true');
+}
+
 async function comprobarAlertaClimaticaInicio() {
   if (!usuario) return;
   try {
@@ -1274,7 +1289,11 @@ async function comprobarAlertaClimaticaInicio() {
       ${renderRecomendacionesVivero(principal)}
       ${alertas.length > 1 ? `<div style="font-size:11px;color:var(--muted);margin-top:10px">Hay ${alertas.length} avisos vigentes para el área.</div>` : ''}`;
     const overlay = document.getElementById('climaPopupOverlay');
+    climaPopupTrigger = document.activeElement !== document.body
+      ? document.activeElement
+      : document.getElementById('tabClima');
     overlay.dataset.firma = firma;
+    overlay.inert = false;
     overlay.classList.add('show');
     overlay.setAttribute('aria-hidden', 'false');
     document.querySelector('.clima-popup-close')?.focus();
@@ -1286,8 +1305,8 @@ async function comprobarAlertaClimaticaInicio() {
 function cerrarPopupClima() {
   const overlay = document.getElementById('climaPopupOverlay');
   if (overlay.dataset.firma) sessionStorage.setItem('lemu-alerta-clima-vista', overlay.dataset.firma);
-  overlay.classList.remove('show');
-  overlay.setAttribute('aria-hidden', 'true');
+  ocultarPopupAccesible(overlay, climaPopupTrigger);
+  climaPopupTrigger = null;
   if (actividadPendientePopup) {
     const pendiente = actividadPendientePopup;
     actividadPendientePopup = null;
@@ -1296,8 +1315,10 @@ function cerrarPopupClima() {
 }
 
 function abrirClimaDesdePopup() {
+  const tabClima = document.getElementById('tabClima');
   cerrarPopupClima();
   cambiarTab('clima');
+  tabClima?.focus({ preventScroll: true });
 }
 
 document.getElementById('climaPopupOverlay').addEventListener('click', event => {
@@ -1352,21 +1373,28 @@ function mostrarPopupActividad(aviso) {
   document.getElementById('actividadPopupTexto').textContent = cantidad > 1
     ? `Esta actividad requiere atención. Además hay ${cantidad - 1} actividad${cantidad - 1 === 1 ? '' : 'es'} próxima${cantidad - 1 === 1 ? '' : 's'} a vencer.`
     : 'Esta actividad requiere atención dentro del plazo establecido.';
+  actividadPopupTrigger = document.activeElement !== document.body
+    ? document.activeElement
+    : document.getElementById('tabInstrucciones');
+  popup.inert = false;
   popup.classList.add('show');
   popup.setAttribute('aria-hidden', 'false');
+  popup.querySelector('.actividad-popup-close')?.focus();
 }
 
 function cerrarPopupActividad() {
   const popup = document.getElementById('actividadPopup');
   if (popup.dataset.firma) sessionStorage.setItem('lemu-actividad-vencimiento-vista', popup.dataset.firma);
-  popup.classList.remove('show');
-  popup.setAttribute('aria-hidden', 'true');
+  ocultarPopupAccesible(popup, actividadPopupTrigger);
+  actividadPopupTrigger = null;
 }
 
 function abrirActividadDesdePopup() {
   const id = actividadPopupId;
+  const tabInstrucciones = document.getElementById('tabInstrucciones');
   cerrarPopupActividad();
   cambiarTab('instrucciones');
+  tabInstrucciones?.focus({ preventScroll: true });
   setTimeout(() => document.getElementById(`actividad-${id}`)?.scrollIntoView({ behavior:'smooth', block:'center' }), 120);
 }
 

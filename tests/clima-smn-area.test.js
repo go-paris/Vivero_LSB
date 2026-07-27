@@ -41,6 +41,11 @@ test('el inicio muestra un popup por alerta y evita repetirlo durante la sesión
   assert.match(html, /abrirClimaDesdePopup/);
   assert.match(html, /Recomendaciones para el Vivero LEMU/);
   assert.match(html, /renderRecomendacionesVivero/);
+  assert.match(html, /id="climaPopupOverlay"[\s\S]*?aria-hidden="true" inert/);
+  assert.match(html, /ocultarPopupAccesible/);
+  assert.match(html, /container\.contains\(document\.activeElement\)/);
+  assert.match(html, /container\.inert = true/);
+  assert.match(html, /overlay\.inert = false/);
 });
 
 test('el inicio conserva Productividad y adapta la navegación a pantallas móviles', () => {
