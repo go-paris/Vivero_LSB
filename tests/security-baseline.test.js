@@ -84,6 +84,20 @@ test('el primer ingreso va directo al cambio obligatorio de clave', () => {
   assert.doesNotMatch(login, /location\.href\s*=\s*['"]\/index\.html['"]/);
 });
 
+test('el historial no restaura contenido personalizado de una sesión anterior', () => {
+  const server = read('server.js');
+  const index = read('public/index.html');
+  const passwordChange = read('public/cambiar-clave.html');
+  assert.match(server, /Cache-Control', 'no-store, no-cache, must-revalidate, private'/);
+  assert.match(index, /<body class="session-pending">/);
+  assert.match(index, /addEventListener\('pagehide'/);
+  assert.match(index, /addEventListener\('pageshow'/);
+  assert.match(index, /if \(!event\.persisted\) return/);
+  assert.match(index, /if \(!await verificarSesion\(\)\) return/);
+  assert.match(index, /location\.replace\('\/cambiar-clave\.html'\)/);
+  assert.match(passwordChange, /location\.replace\('\/index\.html'\)/);
+});
+
 test('el cambio de clave exige doce caracteres en cliente y servidor', () => {
   const page = read('public/cambiar-clave.html');
   const auth = read('routes/auth.js');

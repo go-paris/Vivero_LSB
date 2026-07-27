@@ -169,7 +169,7 @@ document.getElementById('frm').addEventListener('submit', async e=>{
     }
     okBox.textContent = 'Contraseña actualizada correctamente. Redirigiendo…';
     okBox.style.display='block';
-    setTimeout(()=>location.href='index.html', 1500);
+    setTimeout(()=>location.replace('/index.html'), 1500);
   }catch{
     errBox.textContent = 'Error de conexión con el servidor.';
     errBox.style.display='block';
