@@ -117,7 +117,8 @@ test('las asistencias se rectifican con auditoría y nunca se borran', () => {
 
 test('los adjuntos usan almacenamiento configurable y tipos acotados', () => {
   const routes = read('routes/vivero.js');
-  assert.match(routes, /process\.env\.UPLOAD_DIR/);
+  const storage = read('lib/upload-storage.js');
+  assert.match(storage, /env\.RAILWAY_VOLUME_MOUNT_PATH \|\| env\.UPLOAD_DIR/);
   assert.match(routes, /application\/pdf/);
   assert.match(routes, /image\/jpeg/);
   assert.match(routes, /image\/png/);

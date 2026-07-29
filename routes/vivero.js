@@ -10,6 +10,7 @@ const crypto   = require('crypto');
 const db       = require('../db');
 const { GeofenceError, evaluateGeofence, readGeofenceConfig } = require('../lib/geofence');
 const { canAdminister } = require('../lib/roles');
+const { ensureUploadDir } = require('../lib/upload-storage');
 
 const router = express.Router();
 
@@ -25,8 +26,7 @@ function requireAdmin(req, res, next) {
 }
 
 // ── Multer ────────────────────────────────────────────────
-const uploadDir = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '..', 'uploads'));
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir = ensureUploadDir();
 const uploadTypes = new Map([
   ['application/pdf', '.pdf'],
   ['image/jpeg', '.jpg'],
@@ -584,6 +584,10 @@ router.post('/archivos', requireAuth, requireAdmin, upload.single('archivo'), as
     res.json({ ok: true });
   } catch (err) {
     console.error('[archivos/post]', err.message);
+    if (req.file?.path) {
+      try { await fs.promises.unlink(req.file.path); }
+      catch (cleanupError) { console.error('[archivos/cleanup]', cleanupError.message); }
+    }
     res.status(500).json({ error: 'Error al guardar archivo' });
   }
 });

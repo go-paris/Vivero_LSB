@@ -15,10 +15,10 @@ const MySQLStore = require('express-mysql-session')(session);
 const crypto   = require('crypto');
 const multer   = require('multer');
 const path     = require('path');
-const fs       = require('fs');
 const db       = require('./db');
 const { readGeofenceConfig } = require('./lib/geofence');
-const uploadDir = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, 'uploads'));
+const { ensureUploadDir } = require('./lib/upload-storage');
+const uploadDir = ensureUploadDir();
 
 const app = express();
 const PORT = process.env.PORT || process.env.VIVERO_PORT || 3001;
