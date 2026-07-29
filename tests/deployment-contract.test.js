@@ -12,6 +12,7 @@ test('Railway usa contenedor, healthcheck y volumen configurable', () => {
   const railway = JSON.parse(read('railway.json'));
   assert.equal(railway.build.builder, 'DOCKERFILE');
   assert.equal(railway.deploy.healthcheckPath, '/health');
+  assert.match(read('server.js'), /upload_storage: 'writable'/);
   assert.match(read('Dockerfile'), /ENTRYPOINT \["\/app\/docker-entrypoint\.sh"\]/);
   assert.match(read('docker-entrypoint.sh'), /exec su-exec node/);
   assert.match(read('.env.example'), /UPLOAD_DIR=/);

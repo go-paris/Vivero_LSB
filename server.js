@@ -147,7 +147,12 @@ app.get('/health', async (req, res) => {
   try {
     const [rows] = await db.query('SELECT sistema, schema_version FROM vivero_metadata WHERE id = 1 LIMIT 1');
     if (rows[0]?.sistema !== 'VIVERO_LEMU') throw new Error('Marca de base inválida');
-    res.json({ ok: true, service: 'vivero-lemu', schema_version: rows[0].schema_version });
+    res.json({
+      ok: true,
+      service: 'vivero-lemu',
+      schema_version: rows[0].schema_version,
+      upload_storage: 'writable',
+    });
   } catch (error) {
     res.status(503).json({ ok: false, service: 'vivero-lemu' });
   }
