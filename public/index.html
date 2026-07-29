@@ -27,12 +27,12 @@
 
     /* ── NAVBAR ── */
     .brand-wrap{position:sticky;top:0;z-index:51;background:#fff;border-bottom:1px solid #E4E7EF;padding:0 16px;height:62px;display:flex;align-items:center}
-    .brand-inner{display:flex;align-items:center;gap:14px;width:100%;min-width:0}
-    .brand-wrap img{height:auto;width:min(430px,62vw);max-height:44px;display:block;object-fit:contain;object-position:left center;flex-shrink:1}
+    .brand-inner{display:flex;align-items:center;gap:10px;width:100%;min-width:0}
+    .brand-wrap img{height:44px;width:auto;max-width:min(430px,62vw);display:block;object-fit:contain;object-position:left center;flex-shrink:1}
     .brand-divider{width:1px;height:36px;background:var(--border);flex-shrink:0}
     .brand-meta{min-width:0}
     .brand-name{font-family:'Hind',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.1;white-space:nowrap}
-    .brand-tagline{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px;line-height:1.35}
+    .brand-tagline{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px;line-height:1.35;white-space:nowrap}
     .navbar{
       position:sticky;top:62px;z-index:100;
       background:var(--bosque);
@@ -441,10 +441,10 @@
     @media(max-width:700px){
       .brand-wrap{height:58px;padding:0 10px}
       .brand-inner{gap:8px}
-      .brand-wrap img{width:min(220px,64vw);max-height:40px}
+      .brand-wrap img{height:40px;width:auto;max-width:min(220px,56vw)}
       .brand-divider{height:32px}
       .brand-name{font-size:12px}
-      .brand-tagline{font-size:9px;max-width:96px}
+      .brand-tagline{font-size:9px;white-space:normal;max-width:210px}
       .navbar{top:58px;height:54px;padding:0 10px;justify-content:flex-start}
       .nav-right{width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding:5px 0}
       .nav-right::-webkit-scrollbar{display:none}
@@ -467,8 +467,8 @@
       .actividad-popup{top:10px;right:10px;width:calc(100vw - 20px)}
     }
     @media(max-width:360px){
-      .brand-wrap img{width:min(190px,60vw)}
-      .brand-tagline{display:none}
+      .brand-wrap img{height:36px;width:auto;max-width:48vw}
+      .brand-tagline{font-size:8px;line-height:1.2}
       .nav-perfil-txt{display:none}
       .clima-stats{grid-template-columns:1fr}
       .clima-stats .clima-stat:last-child{grid-column:auto}
@@ -491,7 +491,7 @@
     <div class="brand-divider"></div>
     <div class="brand-meta">
       <div class="brand-name">Vivero LEMU</div>
-      <div class="brand-tagline">El Maitén · Producción forestal</div>
+      <div class="brand-tagline">Restauramos el patrimonio natural de los chubutenses</div>
     </div>
   </div>
 </div>
