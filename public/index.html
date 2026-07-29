@@ -86,7 +86,7 @@
       padding:0 16px;
     }
     .tab{
-      flex:1;padding:13px 4px 11px;
+      position:relative;flex:1;padding:13px 4px 11px;
       border:none;background:none;
       font-size:11px;font-weight:600;font-family:'Poppins',sans-serif;
       color:var(--muted);cursor:pointer;
@@ -105,7 +105,9 @@
     /* ── CARDS ── */
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
     .card-title{font-family:'Hind',sans-serif;font-size:14px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+    .card-title>span{display:inline-flex;align-items:center;gap:8px}
     .card-title i{color:var(--teal)}
+    .tab-badge{display:none;position:absolute;top:5px;left:calc(50% + 7px);min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#ef4444;color:#fff;font-family:'Poppins',sans-serif;font-size:9px;font-weight:700;line-height:18px;text-align:center;box-shadow:0 0 0 2px var(--card)}
 
     /* ── ASISTENCIA ── */
     .fichar-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px 0}
@@ -196,6 +198,15 @@
     .inst-btn-marcar{background:var(--teal);color:#fff}
     .inst-btn-finalizar{background:#15803D;color:#fff}
     .inst-btn-reabrir{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .cron-card{background:var(--card);border:1px solid var(--border);border-left-width:4px;border-radius:11px;padding:15px 16px;margin-bottom:11px}
+    .cron-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+    .cron-card-main{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+    .cron-card-title{font-family:'Hind',sans-serif;font-size:17px;font-weight:700;line-height:1.2;color:var(--text);margin:0}
+    .cron-card-meta{display:flex;align-items:center;gap:6px;font-family:'Poppins',sans-serif;font-size:11.5px;line-height:1.45;color:var(--muted)}
+    .cron-card-meta i{color:var(--teal-d);flex-shrink:0}
+    .cron-card-state{flex-shrink:0;padding:4px 9px;border-radius:999px;background:#eef3f1;color:var(--bosque);font-size:10px;font-weight:700;text-transform:capitalize}
+    .cron-card-description{font-family:'Poppins',sans-serif;font-size:12.5px;line-height:1.55;color:var(--text);margin:10px 0 0}
+    .cron-card .inst-btn{margin-top:11px}
     .inst-alerta-personal{
       background:#fef2f2;border:1px solid #fecaca;border-radius:10px;
       padding:12px 14px;margin-bottom:14px;
@@ -461,6 +472,10 @@
       .nav-perfil-txt{display:none}
       .clima-stats{grid-template-columns:1fr}
       .clima-stats .clima-stat:last-child{grid-column:auto}
+      .cron-card{padding:13px}
+      .cron-card-header{flex-direction:column;gap:9px}
+      .cron-card-state{align-self:flex-start}
+      .cron-card-title{font-size:16px}
     }
   </style>
 </head>
@@ -537,10 +552,10 @@
     <i class="fa-solid fa-clipboard-list"></i>Novedades
   </button>
   <button class="tab" onclick="cambiarTab('cronograma')" id="tabCronograma">
-    <i class="fa-solid fa-calendar-days"></i>Cronograma <span id="cronBadge" style="display:none;background:#ef4444;color:white;border-radius:10px;padding:1px 5px;font-size:9px"></span>
+    <i class="fa-solid fa-calendar-days"></i>Cronograma <span id="cronBadge" class="tab-badge"></span>
   </button>
   <button class="tab" onclick="cambiarTab('instrucciones')" id="tabInstrucciones">
-    <i class="fa-solid fa-list-check"></i>Actividades
+    <i class="fa-solid fa-list-check"></i>Actividades <span id="instBadge" class="tab-badge" aria-label="Actividades nuevas"></span>
   </button>
   <button class="tab" onclick="cambiarTab('archivos')" id="tabArchivos">
     <i class="fa-solid fa-folder-open"></i>Archivos
@@ -981,6 +996,7 @@ let geoValida = false;
 let geoRequestInProgress = false;
 let actividadPendientePopup = null;
 let actividadPopupId = null;
+let instruccionesCargadas = [];
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', async () => {
@@ -1077,6 +1093,34 @@ function cambiarTab(tab) {
   const tabEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
   if (tabEl) tabEl.classList.add('activo');
   if (tab === 'clima') cargarClima();
+  if (tab === 'instrucciones') marcarActividadesVistas();
+}
+
+function claveActividadesVistas() {
+  return usuario?.id ? `lemu-actividades-vistas-${usuario.id}` : '';
+}
+
+function actualizarBadgeActividades(data) {
+  instruccionesCargadas = Array.isArray(data) ? data : [];
+  const key = claveActividadesVistas();
+  const lastSeenId = Number(key ? localStorage.getItem(key) : 0) || 0;
+  const nuevas = instruccionesCargadas.filter(item =>
+    Number(item.id) > lastSeenId && item.estado !== 'finalizada'
+  ).length;
+  const badge = document.getElementById('instBadge');
+  badge.textContent = nuevas > 99 ? '99+' : String(nuevas);
+  badge.style.display = nuevas ? 'inline-block' : 'none';
+  badge.setAttribute('aria-label', `${nuevas} actividad${nuevas === 1 ? '' : 'es'} nueva${nuevas === 1 ? '' : 's'}`);
+}
+
+function marcarActividadesVistas() {
+  const key = claveActividadesVistas();
+  if (!key || !instruccionesCargadas.length) return;
+  const maxId = Math.max(...instruccionesCargadas.map(item => Number(item.id) || 0));
+  localStorage.setItem(key, String(maxId));
+  const badge = document.getElementById('instBadge');
+  badge.style.display = 'none';
+  badge.textContent = '';
 }
 
 // ── TOAST ──
@@ -1430,7 +1474,18 @@ async function cargarCronograma() {
       const inicio = new Date(x.fecha_inicio+'T12:00:00').toLocaleDateString('es-AR');
       const fin = x.fecha_fin ? ' al '+new Date(x.fecha_fin+'T12:00:00').toLocaleDateString('es-AR') : '';
       const admin = usuario && ['director_general','administrador_tecnico'].includes(usuario.rol);
-      return `<div class="inst-card" style="border-left:4px solid ${x.alerta_activa?'#f59e0b':'#37b7af'}"><div class="inst-card-header"><div><span class="inst-badge">${escH(x.tipo)}</span><h3 style="margin:7px 0 3px">${escH(x.titulo)}</h3><div class="inst-meta"><i class="fa-regular fa-calendar"></i> ${inicio}${fin}${x.hora?' · '+escH(x.hora.slice(0,5)):''}${x.lote?' · Lote '+escH(x.lote):''}${x.responsable_nombre?' · '+escH(x.responsable_nombre):''}</div></div><span class="inst-estado">${escH(x.estado.replace('_',' '))}</span></div>${x.descripcion?`<p class="inst-texto">${escH(x.descripcion)}</p>`:''}${admin&&x.estado!=='completada'?`<button class="inst-btn inst-btn-finalizar" onclick="cambiarEstadoCron(${x.id},'completada')"><i class="fa-solid fa-check"></i> Completar</button>`:''}</div>`;
+      return `<article class="cron-card" style="border-left-color:${x.alerta_activa?'#f59e0b':'#37b7af'}">
+        <div class="cron-card-header">
+          <div class="cron-card-main">
+            <span class="inst-badge">${escH(x.tipo)}</span>
+            <h3 class="cron-card-title">${escH(x.titulo)}</h3>
+            <div class="cron-card-meta"><i class="fa-regular fa-calendar"></i><span>${inicio}${fin}${x.hora?' · '+escH(x.hora.slice(0,5)):''}${x.lote?' · Lote '+escH(x.lote):''}${x.responsable_nombre?' · '+escH(x.responsable_nombre):''}</span></div>
+          </div>
+          <span class="cron-card-state">${escH(x.estado.replaceAll('_',' '))}</span>
+        </div>
+        ${x.descripcion?`<p class="cron-card-description">${escH(x.descripcion)}</p>`:''}
+        ${admin&&x.estado!=='completada'?`<button class="inst-btn inst-btn-finalizar" onclick="cambiarEstadoCron(${x.id},'completada')"><i class="fa-solid fa-check"></i> Completar</button>`:''}
+      </article>`;
     }).join('');
   } catch { document.getElementById('cronLista').innerHTML='<div class="inst-empty">No se pudo cargar el cronograma</div>'; }
 }
@@ -1569,6 +1624,8 @@ async function cargarInstrucciones() {
   try {
     const r = await fetch('/api/vivero/instrucciones', { credentials: 'include' });
     const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'No se pudieron cargar las actividades');
+    actualizarBadgeActividades(data);
     const el = document.getElementById('instLista');
     const esCoordinador = usuario.rol === 'director_general' || usuario.rol === 'encargado';
 
@@ -1663,6 +1720,9 @@ async function cargarInstrucciones() {
         ${acciones ? `<div class="inst-item-acciones">${acciones}</div>` : ''}
       </div>`;
     }).join('');
+    if (document.getElementById('panelInstrucciones').classList.contains('activo')) {
+      marcarActividadesVistas();
+    }
   } catch {
     document.getElementById('instLista').innerHTML = '<div class="inst-empty">No se pudo cargar</div>';
   }
