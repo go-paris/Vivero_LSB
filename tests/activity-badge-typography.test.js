@@ -29,3 +29,11 @@ test('Actividades muestra y limpia un contador de novedades por usuario', () => 
   assert.match(html, /if \(tab === 'instrucciones'\) marcarActividadesVistas\(\)/);
   assert.match(html, /item\.estado !== 'finalizada'/);
 });
+
+test('Novedades muestra y limpia un contador personal al abrir la pestaña', () => {
+  assert.match(html, /id="novBadge"/);
+  assert.match(html, /lemu-novedades-vistas-\$\{usuario\.id\}/);
+  assert.match(html, /actualizarBadgeNovedades\(data\)/);
+  assert.match(html, /if \(tab === 'novedades'\) marcarNovedadesVistas\(\)/);
+  assert.match(html, /panelNovedades'\)\.classList\.contains\('activo'\)/);
+});

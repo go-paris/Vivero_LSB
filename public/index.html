@@ -549,7 +549,7 @@
     <i class="fa-solid fa-clock"></i>Asistencia
   </button>
   <button class="tab" onclick="cambiarTab('novedades')" id="tabNovedades">
-    <i class="fa-solid fa-clipboard-list"></i>Novedades
+    <i class="fa-solid fa-clipboard-list"></i>Novedades <span id="novBadge" class="tab-badge" aria-label="Novedades nuevas"></span>
   </button>
   <button class="tab" onclick="cambiarTab('cronograma')" id="tabCronograma">
     <i class="fa-solid fa-calendar-days"></i>Cronograma <span id="cronBadge" class="tab-badge"></span>
@@ -997,6 +997,7 @@ let geoRequestInProgress = false;
 let actividadPendientePopup = null;
 let actividadPopupId = null;
 let instruccionesCargadas = [];
+let novedadesCargadas = [];
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', async () => {
@@ -1093,7 +1094,33 @@ function cambiarTab(tab) {
   const tabEl = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
   if (tabEl) tabEl.classList.add('activo');
   if (tab === 'clima') cargarClima();
+  if (tab === 'novedades') marcarNovedadesVistas();
   if (tab === 'instrucciones') marcarActividadesVistas();
+}
+
+function claveNovedadesVistas() {
+  return usuario?.id ? `lemu-novedades-vistas-${usuario.id}` : '';
+}
+
+function actualizarBadgeNovedades(data) {
+  novedadesCargadas = Array.isArray(data) ? data : [];
+  const key = claveNovedadesVistas();
+  const lastSeenId = Number(key ? localStorage.getItem(key) : 0) || 0;
+  const nuevas = novedadesCargadas.filter(item => Number(item.id) > lastSeenId).length;
+  const badge = document.getElementById('novBadge');
+  badge.textContent = nuevas > 99 ? '99+' : String(nuevas);
+  badge.style.display = nuevas ? 'inline-block' : 'none';
+  badge.setAttribute('aria-label', `${nuevas} novedad${nuevas === 1 ? '' : 'es'} nueva${nuevas === 1 ? '' : 's'}`);
+}
+
+function marcarNovedadesVistas() {
+  const key = claveNovedadesVistas();
+  if (!key || !novedadesCargadas.length) return;
+  const maxId = Math.max(...novedadesCargadas.map(item => Number(item.id) || 0));
+  localStorage.setItem(key, String(maxId));
+  const badge = document.getElementById('novBadge');
+  badge.style.display = 'none';
+  badge.textContent = '';
 }
 
 function claveActividadesVistas() {
@@ -1544,6 +1571,8 @@ async function cargarNovedades() {
     const r = await fetch('/api/vivero/novedades', { credentials: 'include' });
     const data = await r.json();
     const el = document.getElementById('novLista');
+    actualizarBadgeNovedades(data);
+    if (document.getElementById('panelNovedades').classList.contains('activo')) marcarNovedadesVistas();
     if (!data.length) {
       el.innerHTML = '<div class="nov-empty"><i class="fa-solid fa-clipboard" style="opacity:.3;margin-right:6px"></i>Sin novedades registradas</div>';
       return;
