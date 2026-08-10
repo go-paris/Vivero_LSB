@@ -513,6 +513,9 @@
     <button class="nb-ghost" onclick="cambiarTab('plantas')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
       <i class="fa-solid fa-seedling" style="font-size:11px"></i>Plantas
     </button>
+    <button class="nb-ghost" onclick="cambiarTab('semillas')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
+      <i class="fa-solid fa-wheat-awn" style="font-size:11px"></i>Semillas
+    </button>
     <button class="nb-ghost" onclick="cambiarTab('clima')" style="font-size:11px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Poppins',sans-serif;font-weight:600">
       <i class="fa-solid fa-cloud-sun" style="font-size:11px"></i>Clima
     </button>
@@ -778,6 +781,38 @@
   </div>
 </div>
 
+<!-- PANEL SEMILLAS -->
+<div class="panel" id="panelSemillas">
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between">
+      <span><i class="fa-solid fa-wheat-awn"></i>Inventario de semillas</span>
+      <button class="btn-primary" id="btnNuevaSemilla" style="font-size:11px;padding:6px 12px;display:none" onclick="abrirFormSemilla()"><i class="fa-solid fa-plus"></i>Nueva partida</button>
+    </div>
+    <div id="semillaFormCard" style="display:none;border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0 16px">
+      <div class="med-form">
+        <div class="med-field"><label>Código *</label><input class="med-input" id="smCodigo" maxlength="120" placeholder="SEM-2026-001"/></div>
+        <div class="med-field"><label>Especie *</label><input class="med-input" id="smEspecie" maxlength="180" placeholder="Nothofagus pumilio"/></div>
+        <div class="med-field"><label>Nombre común</label><input class="med-input" id="smNombreComun" maxlength="180" placeholder="Lenga"/></div>
+        <div class="med-field"><label>Procedencia *</label><input class="med-input" id="smProcedencia" maxlength="300" placeholder="Rodal semillero / ubicación"/></div>
+        <div class="med-field"><label>Proveedor o recolector</label><input class="med-input" id="smProveedor" maxlength="250"/></div>
+        <div class="med-field"><label>Fecha de recolección</label><input class="med-input" id="smFechaRecoleccion" type="date"/></div>
+        <div class="med-field"><label>Fecha de ingreso *</label><input class="med-input" id="smFechaIngreso" type="date"/></div>
+        <div class="med-field"><label>Cantidad inicial *</label><input class="med-input" id="smCantidad" type="number" min="0" step="0.001"/></div>
+        <div class="med-field"><label>Unidad</label><select class="med-input" id="smUnidad"><option value="semillas">Semillas</option><option value="gramos">Gramos</option><option value="kilogramos">Kilogramos</option></select></div>
+        <div class="med-field"><label>Peso húmedo (kg)</label><input class="med-input" id="smPesoHumedo" type="number" min="0" step="0.001"/></div>
+        <div class="med-field"><label>Peso seco (kg)</label><input class="med-input" id="smPesoSeco" type="number" min="0" step="0.001"/></div>
+        <div class="med-field"><label>Humedad (%)</label><input class="med-input" id="smHumedad" type="number" min="0" max="100" step="0.01"/></div>
+        <div class="med-field"><label>Estado</label><select class="med-input" id="smEstado"><option value="disponible">Disponible</option><option value="en_tratamiento">En tratamiento</option></select></div>
+        <div class="med-field"><label>Almacenamiento</label><input class="med-input" id="smAlmacenamiento" maxlength="300" placeholder="Cámara fría / estante"/></div>
+        <div class="med-field" style="grid-column:1/-1"><label>Tratamiento pregerminativo</label><input class="med-input" id="smTratamiento" maxlength="500" placeholder="Estratificación, escarificación, remojo, etc."/></div>
+        <div class="med-field" style="grid-column:1/-1"><label>Observaciones</label><textarea class="med-input" id="smObservaciones" maxlength="4000" rows="3"></textarea></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn-primary" style="background:#6B7A8D" onclick="cerrarFormSemilla()">Cancelar</button><button class="btn-primary" onclick="guardarSemilla()"><i class="fa-solid fa-floppy-disk"></i>Guardar partida</button></div>
+    </div>
+    <div class="planta-grid" id="semillaGrid"><div class="loading" style="grid-column:1/-1"><i class="fa-solid fa-spinner fa-spin"></i>Cargando...</div></div>
+  </div>
+</div>
+
 <!-- PANEL PLANTAS -->
 <div class="panel" id="panelPlantas">
 
@@ -931,8 +966,7 @@
       <div class="med-field"><label>Sector</label><input class="med-input" id="nlSector" type="text" placeholder="Invernadero 2"/></div>
       <div class="med-field"><label>Fecha de siembra</label><input class="med-input" id="nlFechaSiembra" type="date"/></div>
       <div class="med-field"><label>Sustrato</label><input class="med-input" id="nlSustrato" type="text" placeholder="Turba + perlita"/></div>
-      <div class="med-field"><label>Procedencia de la semilla</label><input class="med-input" id="nlProcedencia" type="text" placeholder="Rodal semillero / proveedor"/></div>
-      <div class="med-field"><label>Lote de semilla</label><input class="med-input" id="nlLoteSemilla" type="text" placeholder="Identificador"/></div>
+      <div class="med-field" style="grid-column:1/-1"><label>Partida de semillas</label><select class="med-input" id="nlSemillaId"><option value="">— Sin vincular —</option></select></div>
       <div class="med-field"><label>Cantidad sembrada *</label><input class="med-input" id="nlCantidad" type="number" placeholder="5000"/></div>
       <div class="med-field" style="grid-column:1/-1"><label>Notas</label><input class="med-input" id="nlNotas" type="text" placeholder="Opcional"/></div>
     </div>
@@ -998,6 +1032,7 @@ let actividadPendientePopup = null;
 let actividadPopupId = null;
 let instruccionesCargadas = [];
 let novedadesCargadas = [];
+let semillasCargadas = [];
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', async () => {
@@ -1011,6 +1046,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   cargarInstrucciones();
   cargarArchivos();
   cargarProductividad();
+  cargarSemillas();
   cargarPlantas();
 });
 
@@ -1039,6 +1075,7 @@ async function verificarSesion() {
       document.getElementById('btnSubirArch').style.display = 'inline-flex';
       document.getElementById('btnNuevaTarea').style.display = 'inline-flex';
       document.getElementById('btnNuevoLote').style.display = 'inline-flex';
+      document.getElementById('btnNuevaSemilla').style.display = 'inline-flex';
     }
     if (usuario.rol === 'director_general') {
       document.getElementById('navActividad').style.display = 'inline-flex';
@@ -1972,6 +2009,67 @@ function cerrarFormTarea() {
 }
 
 // ── PLANTAS ──
+function abrirFormSemilla() {
+  document.getElementById('semillaFormCard').style.display = 'block';
+  document.getElementById('btnNuevaSemilla').style.display = 'none';
+  if (!document.getElementById('smFechaIngreso').value) document.getElementById('smFechaIngreso').value = new Date().toISOString().slice(0,10);
+}
+
+function cerrarFormSemilla() {
+  document.getElementById('semillaFormCard').style.display = 'none';
+  if (usuario && ['director_general','administrador_tecnico'].includes(usuario.rol)) document.getElementById('btnNuevaSemilla').style.display = 'inline-flex';
+}
+
+async function cargarSemillas() {
+  try {
+    const r = await fetch('/api/vivero/semillas', { credentials:'include' });
+    if (!r.ok) throw new Error();
+    semillasCargadas = await r.json();
+    const grid = document.getElementById('semillaGrid');
+    grid.innerHTML = semillasCargadas.length ? semillasCargadas.map(s => `
+      <div class="planta-card">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+          <div><div class="planta-especie">${escH(s.especie)}</div><div class="planta-lote">${escH(s.codigo)}${s.nombre_comun?` · ${escH(s.nombre_comun)}`:''}</div></div>
+          <span class="inst-badge">${escH(String(s.estado).replaceAll('_',' '))}</span>
+        </div>
+        <div class="planta-stat"><span class="planta-stat-lbl">Disponible</span><span class="planta-stat-val ok">${s.cantidad_disponible} ${escH(s.unidad)}</span></div>
+        <div class="planta-stat"><span class="planta-stat-lbl">Procedencia</span><span class="planta-stat-val">${escH(s.procedencia)}</span></div>
+        <div class="planta-stat"><span class="planta-stat-lbl">Peso húmedo / seco</span><span class="planta-stat-val">${s.peso_humedo_kg ?? '—'} / ${s.peso_seco_kg ?? '—'} kg</span></div>
+        <div class="planta-stat"><span class="planta-stat-lbl">Humedad</span><span class="planta-stat-val">${s.humedad_pct != null ? s.humedad_pct+'%' : '—'}</span></div>
+        ${s.almacenamiento?`<div style="font-size:10px;color:var(--muted);margin-top:6px"><i class="fa-solid fa-box-archive"></i> ${escH(s.almacenamiento)}</div>`:''}
+        ${s.tratamiento_pregerminativo?`<div style="font-size:10px;color:var(--muted);margin-top:4px">Tratamiento: ${escH(s.tratamiento_pregerminativo)}</div>`:''}
+      </div>`).join('') : '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);font-size:12px">Sin partidas de semillas registradas</div>';
+    const selector = document.getElementById('nlSemillaId');
+    selector.innerHTML = '<option value="">— Sin vincular —</option>' + semillasCargadas
+      .filter(s => ['disponible','en_tratamiento'].includes(s.estado) && Number(s.cantidad_disponible) > 0)
+      .map(s => `<option value="${s.id}">${escH(s.codigo)} · ${escH(s.especie)} · ${s.cantidad_disponible} ${escH(s.unidad)}</option>`).join('');
+  } catch {
+    document.getElementById('semillaGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;color:var(--muted)">No se pudo cargar el inventario</div>';
+  }
+}
+
+async function guardarSemilla() {
+  const payload = {
+    codigo: document.getElementById('smCodigo').value.trim(), especie: document.getElementById('smEspecie').value.trim(),
+    nombre_comun: document.getElementById('smNombreComun').value.trim() || null,
+    procedencia: document.getElementById('smProcedencia').value.trim(), proveedor_recolector: document.getElementById('smProveedor').value.trim() || null,
+    fecha_recoleccion: document.getElementById('smFechaRecoleccion').value || null, fecha_ingreso: document.getElementById('smFechaIngreso').value,
+    cantidad_inicial: document.getElementById('smCantidad').value, unidad: document.getElementById('smUnidad').value,
+    peso_humedo_kg: document.getElementById('smPesoHumedo').value, peso_seco_kg: document.getElementById('smPesoSeco').value,
+    humedad_pct: document.getElementById('smHumedad').value, estado: document.getElementById('smEstado').value,
+    almacenamiento: document.getElementById('smAlmacenamiento').value.trim() || null,
+    tratamiento_pregerminativo: document.getElementById('smTratamiento').value.trim() || null,
+    observaciones: document.getElementById('smObservaciones').value.trim() || null,
+  };
+  if (!payload.codigo || !payload.especie || !payload.procedencia || !payload.fecha_ingreso || payload.cantidad_inicial === '') { showToast('Completá código, especie, procedencia, fecha y cantidad', 'error'); return; }
+  if (payload.peso_humedo_kg && payload.peso_seco_kg && Number(payload.peso_seco_kg) > Number(payload.peso_humedo_kg)) { showToast('El peso seco no puede superar el peso húmedo', 'error'); return; }
+  try {
+    const r = await fetch('/api/vivero/semillas', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error);
+    cerrarFormSemilla(); showToast('Partida de semillas registrada'); await cargarSemillas();
+  } catch (e) { showToast(e.message || 'No se pudo registrar la partida', 'error'); }
+}
+
 async function cargarPlantas() {
   try {
     const [rLotes, rMed] = await Promise.all([
@@ -2071,7 +2169,7 @@ function abrirModalLote() { document.getElementById('nuevoLoteOverlay').classLis
 function cerrarModalLote() {
   document.getElementById('nuevoLoteOverlay').classList.remove('show');
   ['nlEspecie','nlNombreComun','nlLote','nlSector','nlFechaSiembra','nlSustrato',
-   'nlProcedencia','nlLoteSemilla','nlCantidad','nlNotas'].forEach(id => document.getElementById(id).value = '');
+   'nlSemillaId','nlCantidad','nlNotas'].forEach(id => document.getElementById(id).value = '');
 }
 async function guardarNuevoLote() {
   const payload = {
@@ -2081,8 +2179,7 @@ async function guardarNuevoLote() {
     sector:              document.getElementById('nlSector').value.trim() || null,
     fecha_siembra:       document.getElementById('nlFechaSiembra').value || null,
     sustrato:            document.getElementById('nlSustrato').value.trim() || null,
-    procedencia_semilla: document.getElementById('nlProcedencia').value.trim() || null,
-    lote_semilla:        document.getElementById('nlLoteSemilla').value.trim() || null,
+    semilla_id:          document.getElementById('nlSemillaId').value || null,
     cantidad_semilla:    parseInt(document.getElementById('nlCantidad').value) || null,
     cantidad:            parseInt(document.getElementById('nlCantidad').value) || null,
     notas:               document.getElementById('nlNotas').value.trim() || null,
@@ -2415,10 +2512,10 @@ async function guardarDespacho() {
 }
 
 // ── Envío genérico de cualquier subregistro del lote ──
-async function enviarSubregistro(tipo, payload) {
+async function enviarSubregistro(tipo, payload, method = 'POST') {
   try {
     const r = await fetch(`/api/vivero/lotes/${loteActualId}/${tipo}`, {
-      method: 'POST', credentials: 'include',
+      method, credentials: 'include',
       headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     const d = await r.json();

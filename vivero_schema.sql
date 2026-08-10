@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS vivero_metadata (
 );
 
 INSERT INTO vivero_metadata (id, sistema, schema_version)
-VALUES (1, 'VIVERO_LEMU', 3)
+VALUES (1, 'VIVERO_LEMU', 4)
 ON DUPLICATE KEY UPDATE sistema = VALUES(sistema), schema_version = VALUES(schema_version);
 
 CREATE TABLE IF NOT EXISTS vivero_usuarios (
@@ -154,6 +154,32 @@ CREATE TABLE IF NOT EXISTS vivero_tareas (
   INDEX idx_tarea_usuario_fecha (usuario_id, created_at, completada)
 );
 
+CREATE TABLE IF NOT EXISTS vivero_semillas (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  codigo VARCHAR(120) NOT NULL UNIQUE,
+  especie VARCHAR(180) NOT NULL,
+  nombre_comun VARCHAR(180) NULL,
+  procedencia VARCHAR(300) NOT NULL,
+  proveedor_recolector VARCHAR(250) NULL,
+  fecha_recoleccion DATE NULL,
+  fecha_ingreso DATE NOT NULL,
+  peso_humedo_kg DECIMAL(12,3) NULL,
+  peso_seco_kg DECIMAL(12,3) NULL,
+  humedad_pct DECIMAL(5,2) NULL,
+  cantidad_inicial DECIMAL(14,3) NOT NULL,
+  cantidad_disponible DECIMAL(14,3) NOT NULL,
+  unidad ENUM('semillas','gramos','kilogramos') NOT NULL DEFAULT 'semillas',
+  tratamiento_pregerminativo VARCHAR(500) NULL,
+  almacenamiento VARCHAR(300) NULL,
+  estado ENUM('disponible','en_tratamiento','agotada','descartada') NOT NULL DEFAULT 'disponible',
+  observaciones TEXT NULL,
+  created_by INT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_semilla_usuario FOREIGN KEY (created_by) REFERENCES vivero_usuarios(id),
+  INDEX idx_semilla_especie_estado (especie, estado)
+);
+
 CREATE TABLE IF NOT EXISTS vivero_lotes (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   especie VARCHAR(180) NOT NULL,
@@ -168,6 +194,7 @@ CREATE TABLE IF NOT EXISTS vivero_lotes (
   procedencia_semilla VARCHAR(300) NULL,
   lote_semilla VARCHAR(150) NULL,
   cantidad_semilla INT NULL,
+  semilla_id BIGINT NULL,
   cantidad_actual INT NULL,
   etapa_actual ENUM('siembra','germinacion','repique','crecimiento','rustificacion','despacho') NOT NULL DEFAULT 'siembra',
   fecha_etapa_actual DATE NULL,
@@ -175,6 +202,7 @@ CREATE TABLE IF NOT EXISTS vivero_lotes (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_lote_usuario FOREIGN KEY (created_by) REFERENCES vivero_usuarios(id),
+  CONSTRAINT fk_lote_semilla FOREIGN KEY (semilla_id) REFERENCES vivero_semillas(id),
   INDEX idx_lote_especie_activo (especie, activo)
 );
 

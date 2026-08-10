@@ -24,8 +24,9 @@ async function main() {
     const views = objects.filter(item => item.TABLE_TYPE === 'VIEW').length;
     const required = new Set(['vivero_horarios', 'vivero_ausencias', 'vivero_cronograma']);
     const present = new Set(objects.filter(item => item.TABLE_TYPE === 'BASE TABLE').map(item => item.TABLE_NAME));
-    const ok = marker?.sistema === 'VIVERO_LEMU' && Number(marker.schema_version) >= 3
-      && tables >= 21 && views === 4 && [...required].every(name => present.has(name));
+    required.add('vivero_semillas');
+    const ok = marker?.sistema === 'VIVERO_LEMU' && Number(marker.schema_version) >= 4
+      && tables >= 22 && views === 4 && [...required].every(name => present.has(name));
     console.log(JSON.stringify({ ok, read_only: true, database, schema_version: marker?.schema_version, tables, views, secrets_exposed: false }));
     if (!ok) process.exitCode = 1;
   } finally {

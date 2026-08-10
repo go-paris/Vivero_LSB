@@ -690,6 +690,104 @@ router.delete('/tareas/:id', requireAuth, async (req, res) => {
 // ════════════════════════════════════════════════════════
 // LOTES DE PRODUCCIÓN
 // ════════════════════════════════════════════════════════
+router.get('/semillas', requireAuth, async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT s.*, u.nombre AS creado_por_nombre FROM vivero_semillas s
+       LEFT JOIN vivero_usuarios u ON u.id=s.created_by
+       ORDER BY FIELD(s.estado,'disponible','en_tratamiento','agotada','descartada'), s.especie, s.codigo`
+    );
+    res.json(rows);
+  } catch (err) { res.status(500).json({ error: 'Error al obtener semillas' }); }
+});
+
+function datosSemilla(body) {
+  const numero = (valor, min, max) => {
+    if (valor === '' || valor == null) return null;
+    const n = Number(valor);
+    return Number.isFinite(n) && n >= min && n <= max ? n : NaN;
+  };
+  const texto = (valor, max) => String(valor ?? '').trim().slice(0, max) || null;
+  return {
+    codigo: texto(body.codigo, 120), especie: texto(body.especie, 180),
+    nombre_comun: texto(body.nombre_comun, 180), procedencia: texto(body.procedencia, 300),
+    proveedor_recolector: texto(body.proveedor_recolector, 250),
+    fecha_recoleccion: body.fecha_recoleccion || null, fecha_ingreso: body.fecha_ingreso || null,
+    peso_humedo_kg: numero(body.peso_humedo_kg, 0, 999999999),
+    peso_seco_kg: numero(body.peso_seco_kg, 0, 999999999), humedad_pct: numero(body.humedad_pct, 0, 100),
+    cantidad_inicial: numero(body.cantidad_inicial, 0, 99999999999),
+    unidad: ['semillas','gramos','kilogramos'].includes(body.unidad) ? body.unidad : 'semillas',
+    tratamiento_pregerminativo: texto(body.tratamiento_pregerminativo, 500),
+    almacenamiento: texto(body.almacenamiento, 300),
+    estado: ['disponible','en_tratamiento','agotada','descartada'].includes(body.estado) ? body.estado : 'disponible',
+    observaciones: texto(body.observaciones, 4000),
+  };
+}
+
+router.post('/semillas', requireAuth, requireAdmin, async (req, res) => {
+  const s = datosSemilla(req.body);
+  if (!s.codigo || !s.especie || !s.procedencia || !s.fecha_ingreso || s.cantidad_inicial == null) {
+    return res.status(400).json({ error: 'Código, especie, procedencia, fecha de ingreso y cantidad son requeridos' });
+  }
+  if ([s.peso_humedo_kg,s.peso_seco_kg,s.humedad_pct,s.cantidad_inicial].some(Number.isNaN)) {
+    return res.status(400).json({ error: 'Pesos, humedad o cantidad inválidos' });
+  }
+  if (s.peso_humedo_kg != null && s.peso_seco_kg != null && s.peso_seco_kg > s.peso_humedo_kg) {
+    return res.status(400).json({ error: 'El peso seco no puede superar el peso húmedo' });
+  }
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [result] = await conn.query(
+      `INSERT INTO vivero_semillas
+       (codigo,especie,nombre_comun,procedencia,proveedor_recolector,fecha_recoleccion,fecha_ingreso,
+        peso_humedo_kg,peso_seco_kg,humedad_pct,cantidad_inicial,cantidad_disponible,unidad,
+        tratamiento_pregerminativo,almacenamiento,estado,observaciones,created_by)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [s.codigo,s.especie,s.nombre_comun,s.procedencia,s.proveedor_recolector,s.fecha_recoleccion,s.fecha_ingreso,
+       s.peso_humedo_kg,s.peso_seco_kg,s.humedad_pct,s.cantidad_inicial,s.cantidad_inicial,s.unidad,
+       s.tratamiento_pregerminativo,s.almacenamiento,s.estado,s.observaciones,req.session.usuario.id]
+    );
+    await conn.query(
+      `INSERT INTO vivero_auditoria (actor_usuario_id,accion,entidad,entidad_id,valores_nuevos)
+       VALUES (?,'SEMILLAS_CREADAS','semilla',?,?)`,
+      [req.session.usuario.id, String(result.insertId), JSON.stringify(s)]
+    );
+    await conn.commit();
+    res.json({ ok: true, id: result.insertId });
+  } catch (err) {
+    await conn.rollback();
+    if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: 'Ya existe ese código de semilla' });
+    console.error('[semillas/post]', err.message);
+    res.status(500).json({ error: 'Error al registrar semillas' });
+  } finally { conn.release(); }
+});
+
+router.patch('/semillas/:id', requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const estado = String(req.body.estado || '');
+  if (!Number.isInteger(id) || id <= 0 || !['disponible','en_tratamiento','agotada','descartada'].includes(estado)) {
+    return res.status(400).json({ error: 'Datos inválidos' });
+  }
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+    const [[anterior]] = await conn.query('SELECT estado FROM vivero_semillas WHERE id=? LIMIT 1 FOR UPDATE', [id]);
+    if (!anterior) { await conn.rollback(); return res.status(404).json({ error: 'Partida no encontrada' }); }
+    await conn.query('UPDATE vivero_semillas SET estado=? WHERE id=?', [estado, id]);
+    await conn.query(
+      `INSERT INTO vivero_auditoria (actor_usuario_id,accion,entidad,entidad_id,valores_anteriores,valores_nuevos)
+       VALUES (?,'SEMILLAS_ESTADO_CAMBIADO','semilla',?,?,?)`,
+      [req.session.usuario.id, String(id), JSON.stringify(anterior), JSON.stringify({ estado })]
+    );
+    await conn.commit();
+    res.json({ ok: true });
+  } catch (err) {
+    await conn.rollback();
+    res.status(500).json({ error: 'Error al actualizar semillas' });
+  } finally { conn.release(); }
+});
+
 router.get('/lotes', requireAuth, async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM vivero_lotes WHERE activo = 1 ORDER BY especie ASC');
@@ -700,25 +798,50 @@ router.get('/lotes', requireAuth, async (req, res) => {
 router.post('/lotes', requireAuth, requireAdmin, async (req, res) => {
   const {
     especie, nombre_comun, lote, cantidad, fecha_siembra, sustrato, sector, notas,
-    procedencia_semilla, lote_semilla, cantidad_semilla
+    procedencia_semilla, lote_semilla, cantidad_semilla, semilla_id
   } = req.body;
   if (!especie?.trim() || !lote?.trim()) return res.status(400).json({ error: 'Especie y lote son requeridos' });
   const cantidadInicial = cantidad_semilla ?? cantidad ?? null;
+  const conn = await db.getConnection();
   try {
-    const [result] = await db.query(
+    await conn.beginTransaction();
+    let semilla = null;
+    if (semilla_id) {
+      [[semilla]] = await conn.query(
+        `SELECT id,codigo,procedencia,cantidad_disponible,unidad,estado
+         FROM vivero_semillas WHERE id=? LIMIT 1 FOR UPDATE`, [semilla_id]
+      );
+      if (!semilla || !['disponible','en_tratamiento'].includes(semilla.estado)) {
+        await conn.rollback(); return res.status(400).json({ error: 'La partida de semillas no está disponible' });
+      }
+      if (cantidadInicial == null || Number(cantidadInicial) <= 0 || Number(cantidadInicial) > Number(semilla.cantidad_disponible)) {
+        await conn.rollback(); return res.status(400).json({ error: 'La cantidad supera la existencia disponible de semillas' });
+      }
+    }
+    const [result] = await conn.query(
       `INSERT INTO vivero_lotes
        (especie, nombre_comun, lote, cantidad, fecha_siembra, sustrato, sector, notas, created_by,
-        procedencia_semilla, lote_semilla, cantidad_semilla, cantidad_actual, etapa_actual, fecha_etapa_actual)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'siembra', ?)`,
+        procedencia_semilla, lote_semilla, cantidad_semilla, semilla_id, cantidad_actual, etapa_actual, fecha_etapa_actual)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'siembra', ?)`,
       [especie.trim(), nombre_comun||null, lote.trim(), cantidad||null,
        fecha_siembra||null, sustrato||null, sector||null, notas||null, req.session.usuario.id,
-       procedencia_semilla||null, lote_semilla||null, cantidadInicial, cantidadInicial, fecha_siembra||null]
+       semilla?.procedencia || procedencia_semilla || null, semilla?.codigo || lote_semilla || null,
+       cantidadInicial, semilla?.id || null, cantidadInicial, fecha_siembra||null]
     );
+    if (semilla) {
+      await conn.query(
+        `UPDATE vivero_semillas SET cantidad_disponible=cantidad_disponible-?,
+         estado=IF(cantidad_disponible-?<=0,'agotada',estado) WHERE id=?`,
+        [cantidadInicial, cantidadInicial, semilla.id]
+      );
+    }
+    await conn.commit();
     res.json({ ok: true, id: result.insertId });
   } catch (err) {
+    await conn.rollback();
     console.error('[lotes/post]', err.message);
     res.status(500).json({ error: 'Error al crear lote' });
-  }
+  } finally { conn.release(); }
 });
 
 router.patch('/lotes/:id', requireAuth, requireAdmin, async (req, res) => {

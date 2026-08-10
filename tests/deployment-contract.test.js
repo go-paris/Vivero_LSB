@@ -25,9 +25,9 @@ test('los scripts de esquema rechazan bases ajenas y requieren confirmación', (
   assert.match(apply, /bosques_chubut/);
 });
 
-test('el esquema v3 declara 21 tablas y 4 vistas', () => {
+test('el esquema v4 declara 22 tablas y 4 vistas', () => {
   const schema = read('vivero_schema.sql');
-  assert.equal((schema.match(/CREATE TABLE IF NOT EXISTS/gi) || []).length, 21);
+  assert.equal((schema.match(/CREATE TABLE IF NOT EXISTS/gi) || []).length, 22);
   assert.equal((schema.match(/CREATE VIEW/gi) || []).length, 4);
 });
 

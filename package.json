@@ -12,6 +12,7 @@
     "schema:verify": "node scripts/schema-verify.js",
     "schema:migrate-v2": "node scripts/migrate-v2.js",
     "schema:migrate-v3": "node scripts/migrate-v3.js",
+    "schema:migrate-v4": "node scripts/migrate-v4.js",
     "admin:create": "node routes/Seed-admin-vivero.js",
     "team:seed": "node scripts/seed-team.js",
     "production:preflight": "node scripts/production-preflight.js"
