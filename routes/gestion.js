@@ -45,8 +45,10 @@ router.get('/asistencia', async (req, res) => {
               h.hora_salida AS hora_salida_programada,
               h.tolerancia_min,
               a.primera_entrada, a.ultima_salida, a.cantidad_registros,
+              DATE_FORMAT(DATE_SUB(a.primera_entrada, INTERVAL 3 HOUR), '%H:%i') AS primera_entrada_local,
+              DATE_FORMAT(DATE_SUB(a.ultima_salida, INTERVAL 3 HOUR), '%H:%i') AS ultima_salida_local,
               CASE WHEN a.primera_entrada IS NULL THEN NULL
-                   ELSE GREATEST(0, TIMESTAMPDIFF(MINUTE, CONCAT(?, ' ', h.hora_entrada), a.primera_entrada)) END AS minutos_tarde,
+                   ELSE GREATEST(0, TIMESTAMPDIFF(MINUTE, CONCAT(?, ' ', h.hora_entrada), DATE_SUB(a.primera_entrada, INTERVAL 3 HOUR))) END AS minutos_tarde,
               CASE WHEN a.primera_entrada IS NULL OR a.ultima_salida IS NULL THEN NULL
                    ELSE TIMESTAMPDIFF(MINUTE, a.primera_entrada, a.ultima_salida) END AS minutos_trabajados,
               au.tipo AS ausencia_tipo, au.observaciones AS ausencia_observaciones

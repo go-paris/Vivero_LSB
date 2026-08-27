@@ -73,7 +73,7 @@ router.get('/asistencia/hoy', requireAuth, async (req, res) => {
   try {
     const geofence = readGeofenceConfig();
     const [rows] = await db.query(
-      `SELECT *, timestamp_registro AS created_at,
+      `SELECT *, DATE_FORMAT(timestamp_registro, '%Y-%m-%dT%H:%i:%sZ') AS created_at,
               IF(distancia_vivero_m <= ?, 1, 0) AS geo_valida
        FROM vivero_asistencia
        WHERE usuario_id = ? AND anulado_en IS NULL
@@ -113,7 +113,7 @@ router.post('/asistencia', requireAuth, async (req, res) => {
     await conn.beginTransaction();
     const [lastRows] = await conn.query(
       `SELECT tipo FROM vivero_asistencia
-       WHERE usuario_id = ? AND fecha_local = CURDATE() AND anulado_en IS NULL
+       WHERE usuario_id = ? AND fecha_local = DATE(DATE_SUB(UTC_TIMESTAMP(), INTERVAL 3 HOUR)) AND anulado_en IS NULL
        ORDER BY timestamp_registro DESC, id DESC LIMIT 1 FOR UPDATE`,
       [usuario.id]
     );
@@ -130,7 +130,7 @@ router.post('/asistencia', requireAuth, async (req, res) => {
       `INSERT INTO vivero_asistencia
        (usuario_id, tipo, nombre_usuario, timestamp_registro, latitud, longitud,
         precision_m, distancia_vivero_m, fecha_local, sede_codigo, geocerca_version)
-       VALUES (?, ?, ?, NOW(), ?, ?, ?, ?, CURDATE(), ?, ?)`,
+       VALUES (?, ?, ?, UTC_TIMESTAMP(), ?, ?, ?, ?, DATE(DATE_SUB(UTC_TIMESTAMP(), INTERVAL 3 HOUR)), ?, ?)`,
       [
         usuario.id,
         tipo,

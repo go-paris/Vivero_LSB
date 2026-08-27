@@ -1028,6 +1028,8 @@ let tipoFichada = 'entrada';
 let geoCoords = null;
 let geoValida = false;
 let geoRequestInProgress = false;
+let geoWatchId = null;
+let geoDeadlineTimer = null;
 let actividadPendientePopup = null;
 let actividadPopupId = null;
 let instruccionesCargadas = [];
@@ -1319,25 +1321,45 @@ function abrirGeo() {
     mostrarGeoResultado(false, 'Tu dispositivo no soporta geolocalización');
     return;
   }
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      geoCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      geoCoords.precision_m = pos.coords.accuracy;
-      document.getElementById('geoMensaje').textContent = 'Validando ubicación en el servidor…';
+  const precisionObjetivo = 100;
+  const finalizarCaptura = (usarMejor = false) => {
+    detenerCapturaGeo();
+    if (usarMejor && geoCoords) {
+      document.getElementById('geoMensaje').textContent = `Validando la mejor lectura disponible (±${Math.round(geoCoords.precision_m)} m)…`;
       confirmarFichada();
+      return;
+    }
+    mostrarGeoResultado(false, 'La ubicación tardó demasiado. Activá la ubicación precisa, buscá cielo abierto e intentá nuevamente.');
+    geoRequestInProgress = false;
+    document.getElementById('btnFichar').disabled = false;
+  };
+  geoWatchId = navigator.geolocation.watchPosition(
+    pos => {
+      const lectura = { lat: pos.coords.latitude, lng: pos.coords.longitude, precision_m: pos.coords.accuracy };
+      if (!geoCoords || lectura.precision_m < geoCoords.precision_m) geoCoords = lectura;
+      document.getElementById('geoMensaje').textContent = `Buscando precisión GPS… mejor lectura: ±${Math.round(geoCoords.precision_m)} m`;
+      if (geoCoords.precision_m <= precisionObjetivo) finalizarCaptura(true);
     },
     err => {
-      const mensajes = {
-        1: 'Necesitamos permiso de ubicación para verificar que estás en el vivero.',
-        2: 'El teléfono no pudo determinar la ubicación. Activá la ubicación e intentá nuevamente.',
-        3: 'La ubicación tardó demasiado. Buscá cielo abierto e intentá nuevamente.'
-      };
-      mostrarGeoResultado(false, mensajes[err.code] || 'No se pudo obtener tu ubicación');
-      geoRequestInProgress = false;
-      document.getElementById('btnFichar').disabled = false;
+      if (err.code === 1) {
+        detenerCapturaGeo();
+        mostrarGeoResultado(false, 'Necesitamos permiso de ubicación precisa para verificar que estás en el vivero.');
+        geoRequestInProgress = false;
+        document.getElementById('btnFichar').disabled = false;
+      } else if (!geoCoords) {
+        document.getElementById('geoMensaje').textContent = 'El GPS todavía no obtiene una lectura. Mantené la ubicación activada…';
+      }
     },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    { enableHighAccuracy: true, timeout: 40000, maximumAge: 30000 }
   );
+  geoDeadlineTimer = setTimeout(() => finalizarCaptura(Boolean(geoCoords)), 45000);
+}
+
+function detenerCapturaGeo() {
+  if (geoWatchId != null) navigator.geolocation.clearWatch(geoWatchId);
+  if (geoDeadlineTimer != null) clearTimeout(geoDeadlineTimer);
+  geoWatchId = null;
+  geoDeadlineTimer = null;
 }
 
 function mostrarGeoResultado(ok, msg) {
@@ -1363,13 +1385,17 @@ function mostrarGeoResultado(ok, msg) {
     const bloqueo = document.createElement('p');
     bloqueo.className = 'geo-bloqueo-msg';
     bloqueo.style.cssText = 'font-size:12px;color:#6b7280;margin-top:10px;line-height:1.6;text-align:center';
-    bloqueo.innerHTML = 'Para registrar tu asistencia debés estar dentro del <strong>Vivero Provincial LEMU</strong>.<br>Acercate al vivero e intentá nuevamente.';
+    const fueraDelVivero = /fuera del área|distancia/i.test(msg);
+    bloqueo.innerHTML = fueraDelVivero
+      ? 'Para registrar tu asistencia debés estar dentro del <strong>Vivero Provincial LEMU</strong>.<br>Acercate al vivero e intentá nuevamente.'
+      : 'Activá la <strong>ubicación precisa</strong>, desactivá el ahorro de batería para el navegador y esperá unos segundos preferentemente a cielo abierto.';
     res.after(bloqueo);
     btnOk.style.display = 'none';
   }
 }
 
 function cerrarGeo() {
+  detenerCapturaGeo();
   document.getElementById('geoOverlay').classList.remove('show');
   geoRequestInProgress = false;
   document.getElementById('btnFichar').disabled = false;

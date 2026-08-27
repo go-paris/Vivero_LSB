@@ -34,7 +34,9 @@ test('management page uses authenticated APIs and escapes output',()=>{
 test('attendance UI prevents duplicate requests and explains geolocation errors',()=>{
   const page=read('public/index.html');
   assert.match(page,/geoRequestInProgress/);
-  assert.match(page,/maximumAge:\s*0/);
+  assert.match(page,/maximumAge:\s*30000/);
+  assert.match(page,/watchPosition/);
+  assert.match(page,/clearWatch/);
   assert.match(page,/Necesitamos permiso de ubicación/);
 });
 test('schedule form has a compact typography hierarchy aligned with the dashboard',()=>{
