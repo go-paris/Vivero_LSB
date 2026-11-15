@@ -4,13 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Usuarios — Vivero LEMU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hind:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--forest:#173f34;--teal:#25aaa7;--line:#dbe4e1;--muted:#65736f;--danger:#a33;--bg:#f5f7f6}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#1e2c28}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:'Poppins','Segoe UI',sans-serif;color:#1e2c28}
     header{background:var(--forest);color:#fff;padding:16px 5%;display:flex;justify-content:space-between;align-items:center}
     header a{color:#fff;text-decoration:none}.wrap{width:min(1100px,92%);margin:28px auto}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:18px}
-    h1,h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:12px;font-weight:bold;color:var(--muted)}
-    input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:5px}button{border:0;border-radius:8px;padding:9px 12px;cursor:pointer;font-weight:bold}.primary{background:var(--teal);color:#fff}.secondary{background:#edf3f1;color:var(--forest)}.danger{background:#fff0f0;color:var(--danger)}
+    h1,h2{margin-top:0;font-family:'Hind','Segoe UI',sans-serif}header strong{font-family:'Hind','Segoe UI',sans-serif;font-size:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}label{font-size:12px;font-weight:600;color:var(--muted)}
+    input,select,button{font-family:'Poppins','Segoe UI',sans-serif}input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:5px}button{border:0;border-radius:8px;padding:9px 12px;cursor:pointer;font-weight:600}.primary{background:var(--teal);color:#fff}.secondary{background:#edf3f1;color:var(--forest)}.danger{background:#fff0f0;color:var(--danger)}
     table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);font-size:13px}.actions{display:flex;gap:6px;flex-wrap:wrap}.status{font-size:12px;padding:3px 7px;border-radius:99px;background:#e7f6ef}.inactive{background:#eee;color:#666}.notice{min-height:20px;color:var(--danger);margin:10px 0}@media(max-width:720px){.grid{grid-template-columns:1fr}.table-wrap{overflow:auto}}
   </style>
 </head>

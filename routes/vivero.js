@@ -701,6 +701,28 @@ router.get('/semillas', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: 'Error al obtener semillas' }); }
 });
 
+// PATCH /instrucciones/:id — Dirección y Administración Técnica pueden editar
+router.patch('/instrucciones/:id', requireAuth, requireAdmin, async (req, res) => {
+  const { titulo, texto, fecha_limite } = req.body;
+  if (!titulo?.trim() || !texto?.trim()) {
+    return res.status(400).json({ error: 'El título y el contenido son obligatorios' });
+  }
+  const contenido = `${titulo.trim()}\n${texto.trim()}`;
+  try {
+    const [result] = await db.query(
+      `UPDATE vivero_novedades
+       SET contenido = ?, fecha_limite = ?
+       WHERE id = ? AND tipo = 'instruccion'`,
+      [contenido, fecha_limite || null, req.params.id]
+    );
+    if (!result.affectedRows) return res.status(404).json({ error: 'Actividad no encontrada' });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[instrucciones/patch]', err.message);
+    res.status(500).json({ error: 'Error al editar la actividad' });
+  }
+});
+
 function datosSemilla(body) {
   const numero = (valor, min, max) => {
     if (valor === '' || valor == null) return null;

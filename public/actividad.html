@@ -4,15 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Actividad de usuarios — Vivero LEMU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Hind:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{--forest:#173f34;--teal:#258f8b;--line:#dbe4e1;--muted:#65736f;--bg:#f5f7f6;--card:#fff}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#1e2c28}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:'Poppins','Segoe UI',sans-serif;color:#1e2c28}
     header{background:var(--forest);color:#fff;padding:15px 4%;display:flex;justify-content:space-between;gap:16px;align-items:center}
     header a{color:#fff;text-decoration:none}.wrap{width:min(1180px,94%);margin:24px auto}
     .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-    h1,h2{margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.controls{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
-    label{font-size:12px;font-weight:bold;color:var(--muted)}select,button{margin-top:5px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
-    button{cursor:pointer;background:var(--teal);color:#fff;font-weight:bold}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+    h1,h2,header strong{font-family:'Hind','Segoe UI',sans-serif}h1,h2{margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.controls{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+    label{font-size:12px;font-weight:600;color:var(--muted)}select,button{font-family:'Poppins','Segoe UI',sans-serif;margin-top:5px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fff}
+    button{cursor:pointer;background:var(--teal);color:#fff;font-weight:600}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
     .person{border:1px solid var(--line);border-radius:10px;padding:12px}.person strong{display:block}.person small{color:var(--muted)}
     .feed{display:grid;gap:9px}.event{border-left:4px solid var(--teal);background:#f8fbfa;border-radius:8px;padding:11px 13px}
     .event-head{display:flex;justify-content:space-between;gap:12px}.event-title{font-weight:bold;font-size:13px}.event-time{font-size:11px;color:var(--muted);white-space:nowrap}

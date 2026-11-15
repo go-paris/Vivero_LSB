@@ -198,6 +198,8 @@
     .inst-btn-marcar{background:var(--teal);color:#fff}
     .inst-btn-finalizar{background:#15803D;color:#fff}
     .inst-btn-reabrir{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .inst-btn-editar{background:#E6F7F7;color:var(--teal-d);border:1px solid #b8e4e2}
+    .inst-btn-eliminar{background:#fff0f0;color:#b4232b;border:1px solid #f2c8cb}
     .cron-card{background:var(--card);border:1px solid var(--border);border-left-width:4px;border-radius:11px;padding:15px 16px;margin-bottom:11px}
     .cron-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
     .cron-card-main{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:7px}
@@ -656,7 +658,7 @@
         </button>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn-primary" style="background:#6B7A8D" onclick="document.getElementById('instFormCard').style.display='none'">Cancelar</button>
+        <button class="btn-primary" style="background:#6B7A8D" onclick="cancelarEdicionInstruccion()">Cancelar</button>
         <button class="btn-primary" onclick="guardarInstruccion()">
           <i class="fa-solid fa-floppy-disk"></i>Publicar
         </button>
@@ -1719,7 +1721,7 @@ async function cargarInstrucciones() {
     if (!r.ok) throw new Error(data.error || 'No se pudieron cargar las actividades');
     actualizarBadgeActividades(data);
     const el = document.getElementById('instLista');
-    const esCoordinador = usuario.rol === 'director_general' || usuario.rol === 'encargado';
+    const esCoordinador = ['director_general','administrador_tecnico'].includes(usuario.rol);
 
     // ── Cartel de advertencia personal (para operarios) ──
     const alertaEl = document.getElementById('instAlertaPersonal');
@@ -1797,8 +1799,16 @@ async function cargarInstrucciones() {
           <i class="fa-solid fa-rotate-left"></i>Reabrir
         </button>`;
       }
+      if (esCoordinador) {
+        acciones += `<button class="inst-btn inst-btn-editar" onclick="editarInstruccion(${i.id})">
+          <i class="fa-solid fa-pen"></i>Editar
+        </button>`;
+        acciones += `<button class="inst-btn inst-btn-eliminar" onclick="eliminarInstruccion(${i.id})">
+          <i class="fa-solid fa-trash"></i>Eliminar
+        </button>`;
+      }
 
-      return `<div class="inst-item" id="actividad-${i.id}">
+      return `<div class="inst-item" id="actividad-${i.id}" data-actividad="${encodeURIComponent(JSON.stringify({titulo:i.titulo,texto:i.texto,fecha_limite:soloFecha(i.fecha_limite)||''}))}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
           <div class="inst-item-titulo"><i class="fa-solid fa-circle-dot"></i>${escH(i.titulo)}</div>
           <span class="inst-badge inst-badge-${est.clase}"><i class="fa-solid ${est.icon}"></i>${est.texto}</span>
@@ -1842,6 +1852,43 @@ function limpiarFormSubactividades() {
   document.getElementById('instSubactList').innerHTML = '';
 }
 
+let instruccionEditandoId = null;
+
+function cancelarEdicionInstruccion() {
+  instruccionEditandoId = null;
+  document.getElementById('instTitulo').value = '';
+  document.getElementById('instTexto').value = '';
+  document.getElementById('instFechaLimite').value = '';
+  limpiarFormSubactividades();
+  document.getElementById('instFormCard').style.display = 'none';
+  document.getElementById('btnNuevaInst').style.display = 'inline-flex';
+}
+
+function editarInstruccion(id) {
+  const item = document.getElementById(`actividad-${id}`);
+  if (!item?.dataset.actividad) return;
+  const actividad = JSON.parse(decodeURIComponent(item.dataset.actividad));
+  instruccionEditandoId = id;
+  document.getElementById('instTitulo').value = actividad.titulo || '';
+  document.getElementById('instTexto').value = actividad.texto || '';
+  document.getElementById('instFechaLimite').value = actividad.fecha_limite || '';
+  limpiarFormSubactividades();
+  document.getElementById('instFormCard').style.display = 'block';
+  document.getElementById('btnNuevaInst').style.display = 'none';
+  document.getElementById('instFormCard').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+async function eliminarInstruccion(id) {
+  if (!confirm('¿Eliminar esta actividad? Esta acción no se puede deshacer.')) return;
+  try {
+    const r = await fetch(`/api/vivero/instrucciones/${id}`, { method:'DELETE', credentials:'include' });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || 'No se pudo eliminar');
+    showToast('Actividad eliminada');
+    await cargarInstrucciones();
+  } catch (error) { showToast(error.message, 'error'); }
+}
+
 async function guardarInstruccion() {
   const titulo = document.getElementById('instTitulo').value.trim();
   const texto  = document.getElementById('instTexto').value.trim();
@@ -1849,19 +1896,15 @@ async function guardarInstruccion() {
   const subactividades = leerSubactividadesDelForm();
   if (!titulo || !texto) { showToast('Completá título y contenido', 'error'); return; }
   try {
-    const r = await fetch('/api/vivero/instrucciones', {
-      method: 'POST', credentials: 'include',
+    const editando = instruccionEditandoId !== null;
+    const r = await fetch(editando ? `/api/vivero/instrucciones/${instruccionEditandoId}` : '/api/vivero/instrucciones', {
+      method: editando ? 'PATCH' : 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ titulo, texto, fecha_limite, subactividades })
     });
     if (!r.ok) throw new Error();
-    document.getElementById('instTitulo').value = '';
-    document.getElementById('instTexto').value = '';
-    document.getElementById('instFechaLimite').value = '';
-    limpiarFormSubactividades();
-    document.getElementById('instFormCard').style.display = 'none';
-    document.getElementById('btnNuevaInst').style.display = 'inline-flex';
-    showToast('Actividad publicada');
+    cancelarEdicionInstruccion();
+    showToast(editando ? 'Actividad actualizada' : 'Actividad publicada');
     await cargarInstrucciones();
   } catch { showToast('Error al publicar', 'error'); }
 }
